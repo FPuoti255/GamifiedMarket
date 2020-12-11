@@ -1,12 +1,17 @@
-package dataSource;
+package entities;
 
-@jakarta.persistence.Entity
-@jakarta.persistence.Table(name = "swears", schema = "gamified_market" )
-public class SwearsEntity {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "swears")
+public class Swears {
     private String swearText;
 
-    @jakarta.persistence.Id
-    @jakarta.persistence.Column(name = "swear_text")
+    @Id
+    @Column(name = "swear_text", nullable = false, length = 64)
     public String getSwearText() {
         return swearText;
     }
@@ -20,9 +25,9 @@ public class SwearsEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SwearsEntity that = (SwearsEntity) o;
+        Swears swears = (Swears) o;
 
-        if (swearText != null ? !swearText.equals(that.swearText) : that.swearText != null) return false;
+        if (swearText != null ? !swearText.equals(swears.swearText) : swears.swearText != null) return false;
 
         return true;
     }

@@ -1,14 +1,17 @@
-package dataSource;
+package entities;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class UserlogEntityPK implements Serializable {
+public class UserlogPK implements Serializable {
     private int idUser;
     private Timestamp datetime;
 
-    @jakarta.persistence.Column(name = "id_user")
-    @jakarta.persistence.Id
+    @Column(name = "id_user", nullable = false)
+    @Id
     public int getIdUser() {
         return idUser;
     }
@@ -17,8 +20,8 @@ public class UserlogEntityPK implements Serializable {
         this.idUser = idUser;
     }
 
-    @jakarta.persistence.Column(name = "datetime")
-    @jakarta.persistence.Id
+    @Column(name = "datetime", nullable = false)
+    @Id
     public Timestamp getDatetime() {
         return datetime;
     }
@@ -32,10 +35,10 @@ public class UserlogEntityPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserlogEntityPK that = (UserlogEntityPK) o;
+        UserlogPK userlogPK = (UserlogPK) o;
 
-        if (idUser != that.idUser) return false;
-        if (datetime != null ? !datetime.equals(that.datetime) : that.datetime != null) return false;
+        if (idUser != userlogPK.idUser) return false;
+        if (datetime != null ? !datetime.equals(userlogPK.datetime) : userlogPK.datetime != null) return false;
 
         return true;
     }

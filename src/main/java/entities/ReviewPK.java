@@ -1,13 +1,16 @@
-package dataSource;
+package entities;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
 
 import java.io.Serializable;
 
-public class ReviewEntityPK implements Serializable {
+public class ReviewPK implements Serializable {
     private int idUser;
     private int idProduct;
 
-    @jakarta.persistence.Column(name = "id_user")
-    @jakarta.persistence.Id
+    @Column(name = "id_user", nullable = false)
+    @Id
     public int getIdUser() {
         return idUser;
     }
@@ -16,8 +19,8 @@ public class ReviewEntityPK implements Serializable {
         this.idUser = idUser;
     }
 
-    @jakarta.persistence.Column(name = "id_product")
-    @jakarta.persistence.Id
+    @Column(name = "id_product", nullable = false)
+    @Id
     public int getIdProduct() {
         return idProduct;
     }
@@ -31,10 +34,10 @@ public class ReviewEntityPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ReviewEntityPK that = (ReviewEntityPK) o;
+        ReviewPK reviewPK = (ReviewPK) o;
 
-        if (idUser != that.idUser) return false;
-        if (idProduct != that.idProduct) return false;
+        if (idUser != reviewPK.idUser) return false;
+        if (idProduct != reviewPK.idProduct) return false;
 
         return true;
     }
