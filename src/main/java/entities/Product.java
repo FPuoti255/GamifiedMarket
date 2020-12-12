@@ -10,11 +10,7 @@ import java.util.Collection;
 @Table(name = "product")
 public class Product {
 
-    @Id
-    @Column(name = "id_product", nullable = false)
-    @OneToMany(mappedBy = "id_product", cascade = CascadeType.ALL, orphanRemoval = true)
     private int idProduct;
-
     private String name;
     private byte[] productImage;
     private Date date;
@@ -23,6 +19,12 @@ public class Product {
     private Collection<Review> reviewsByIdProduct;
     private Collection<Userlog> userlogsByIdProduct;
 
+
+    public Product() {
+    }
+
+    @Id
+    @Column(name = "id_product", nullable = false)
     public int getIdProduct() {
         return idProduct;
     }
@@ -41,7 +43,7 @@ public class Product {
         this.name = name;
     }
 
-    @Basic
+
     @Column(name = "product_image", nullable = false)
     public byte[] getProductImage() {
         return productImage;
@@ -51,7 +53,7 @@ public class Product {
         this.productImage = productImage;
     }
 
-    @Basic
+
     @Column(name = "date", nullable = false)
     public Date getDate() {
         return date;

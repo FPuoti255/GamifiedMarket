@@ -19,6 +19,9 @@ public class User {
     private Collection<Review> reviewsByIdUser;
     private Collection<Userlog> userlogsByIdUser;
 
+    public User() {
+    }
+
     @Id
     @Column(name = "id_user", nullable = false)
     public int getIdUser() {
@@ -29,7 +32,7 @@ public class User {
         this.idUser = idUser;
     }
 
-    @Basic
+
     @Column(name = "username", nullable = false, length = 64)
     public String getUsername() {
         return username;
@@ -39,7 +42,7 @@ public class User {
         this.username = username;
     }
 
-    @Basic
+
     @Column(name = "email", nullable = false, length = 64)
     public String getEmail() {
         return email;
@@ -49,7 +52,7 @@ public class User {
         this.email = email;
     }
 
-    @Basic
+
     @Column(name = "password", nullable = false, length = 255)
     public String getPassword() {
         return password;
@@ -59,7 +62,7 @@ public class User {
         this.password = password;
     }
 
-    @Basic
+
     @Column(name = "authorized", nullable = false)
     public boolean isAuthorized() {
         return authorized;
@@ -69,7 +72,7 @@ public class User {
         this.authorized = authorized;
     }
 
-    @Basic
+
     @Column(name = "points", nullable = false)
     public int getPoints() {
         return points;
@@ -79,7 +82,7 @@ public class User {
         this.points = points;
     }
 
-    @Basic
+
     @Column(name = "admin", nullable = false)
     public boolean isAdmin() {
         return admin;
@@ -89,7 +92,7 @@ public class User {
         this.admin = admin;
     }
 
-    @Basic
+
     @Column(name = "active", nullable = false)
     public boolean isActive() {
         return active;

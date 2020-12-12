@@ -13,6 +13,9 @@ public class Question {
     private Collection<Answer> answersByIdQuestion;
     private Collection<Questionnaire> questionnairesByIdQuestion;
 
+    public Question() {
+    }
+
     @Id
     @Column(name = "id_question", nullable = false)
     public int getIdQuestion() {
@@ -23,7 +26,7 @@ public class Question {
         this.idQuestion = idQuestion;
     }
 
-    @Basic
+
     @Column(name = "question_text", nullable = false, length = 255)
     public String getQuestionText() {
         return questionText;
@@ -33,7 +36,7 @@ public class Question {
         this.questionText = questionText;
     }
 
-    @Basic
+
     @Column(name = "points", nullable = false)
     public int getPoints() {
         return points;

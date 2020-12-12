@@ -11,6 +11,9 @@ public class Questionnaire {
     private Product productByIdProduct;
     private Question questionByIdQuestion;
 
+    public Questionnaire() {
+    }
+
     @Id
     @Column(name = "id_product", nullable = false)
     public int getIdProduct() {
@@ -52,7 +55,7 @@ public class Questionnaire {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id_product", referencedColumnName = "id_product", nullable = false)
+    @PrimaryKeyJoinColumn(name = "id_product", referencedColumnName = "id_product")
     public Product getProductByIdProduct() {
         return productByIdProduct;
     }
@@ -62,7 +65,7 @@ public class Questionnaire {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id_question", referencedColumnName = "id_question", nullable = false)
+    @PrimaryKeyJoinColumn(name = "id_question", referencedColumnName = "id_question")
     public Question getQuestionByIdQuestion() {
         return questionByIdQuestion;
     }

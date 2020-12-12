@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tomee>
+<Resource id="gamified_market" type="DataSource">
+ JdbcDriver com.mysql.cj.jdbc.Driver
+ JdbcUrl jdbc:mysql://localhost:3306/gamified_market	
+ UserName <!-- set your username -->
+ Password <!-- set your password -->
+</Resource>
+</tomee>

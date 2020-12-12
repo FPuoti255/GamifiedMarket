@@ -10,6 +10,9 @@ import javax.persistence.Table;
 public class Swears {
     private String swearText;
 
+    public Swears() {
+    }
+
     @Id
     @Column(name = "swear_text", nullable = false, length = 64)
     public String getSwearText() {

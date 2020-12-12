@@ -7,6 +7,8 @@ import javax.persistence.*;
 @Table(name = "answer")
 @IdClass(AnswerPK.class)
 public class Answer {
+    public Answer() {
+    }
 
     private int idProduct;
     private int idUser;
@@ -16,10 +18,8 @@ public class Answer {
     private User userByIdUser;
     private Question questionByIdQuestion;
 
-    @ManyToOne
-    @JoinColumn(name = "id_product")
-    @Column(name = "id_product", nullable = false)
     @Id
+    @Column(name = "id_product", nullable = false)
     public int getIdProduct() {
         return idProduct;
     }
@@ -28,7 +28,7 @@ public class Answer {
         this.idProduct = idProduct;
     }
 
-    @Basic
+
     @Column(name = "id_user", nullable = false)
     @Id
     public int getIdUser() {
@@ -39,7 +39,7 @@ public class Answer {
         this.idUser = idUser;
     }
 
-    @Basic
+
     @Column(name = "id_question", nullable = false)
     @Id
     public int getIdQuestion() {
@@ -50,7 +50,7 @@ public class Answer {
         this.idQuestion = idQuestion;
     }
 
-    @Basic
+
     @Column(name = "answer_text", nullable = false, length = -1)
     public String getAnswerText() {
         return answerText;
@@ -85,7 +85,7 @@ public class Answer {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id_product", referencedColumnName = "id_product", nullable = false)
+    @PrimaryKeyJoinColumn(name = "id_product", referencedColumnName = "id_product")
     public Product getProductByIdProduct() {
         return productByIdProduct;
     }
@@ -95,7 +95,7 @@ public class Answer {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id_user", referencedColumnName = "id_user", nullable = false)
+    @PrimaryKeyJoinColumn(name = "id_user", referencedColumnName = "id_user")
     public User getUserByIdUser() {
         return userByIdUser;
     }
@@ -105,7 +105,7 @@ public class Answer {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id_question", referencedColumnName = "id_question", nullable = false)
+    @PrimaryKeyJoinColumn(name = "id_question", referencedColumnName = "id_question")
     public Question getQuestionByIdQuestion() {
         return questionByIdQuestion;
     }

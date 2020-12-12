@@ -15,6 +15,9 @@ public class Userlog {
     private User userByIdUser;
     private Product productByIdProduct;
 
+    public Userlog() {
+    }
+
     @Id
     @Column(name = "id_user", nullable = false)
     public int getIdUser() {
@@ -79,7 +82,7 @@ public class Userlog {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id_user", referencedColumnName = "id_user", nullable = false)
+    @PrimaryKeyJoinColumn(name = "id_user", referencedColumnName = "id_user")
     public User getUserByIdUser() {
         return userByIdUser;
     }
@@ -89,7 +92,7 @@ public class Userlog {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id_product", referencedColumnName = "id_product")
+    @PrimaryKeyJoinColumn(name = "id_product", referencedColumnName = "id_product")
     public Product getProductByIdProduct() {
         return productByIdProduct;
     }

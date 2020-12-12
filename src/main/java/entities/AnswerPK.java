@@ -11,6 +11,8 @@ public class AnswerPK implements Serializable {
     private int idUser;
     private int idQuestion;
 
+    public AnswerPK() {
+    }
     @Column(name = "id_product", nullable = false)
     @Id
     public int getIdProduct() {

@@ -10,6 +10,9 @@ public class UserlogPK implements Serializable {
     private int idUser;
     private Timestamp datetime;
 
+    public UserlogPK() {
+    }
+
     @Column(name = "id_user", nullable = false)
     @Id
     public int getIdUser() {

@@ -15,6 +15,9 @@ public class Review {
     private User userByIdUser;
     private Product productByIdProduct;
 
+    public Review() {
+    }
+
     @Id
     @Column(name = "id_user", nullable = false)
     public int getIdUser() {
@@ -35,7 +38,7 @@ public class Review {
         this.idProduct = idProduct;
     }
 
-    @Basic
+
     @Column(name = "review_text", nullable = false, length = -1)
     public String getReviewText() {
         return reviewText;
@@ -45,7 +48,7 @@ public class Review {
         this.reviewText = reviewText;
     }
 
-    @Basic
+
     @Column(name = "date", nullable = false)
     public Timestamp getDate() {
         return date;
@@ -80,7 +83,7 @@ public class Review {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id_user", referencedColumnName = "id_user", nullable = false)
+    @PrimaryKeyJoinColumn(name = "id_user", referencedColumnName = "id_user")
     public User getUserByIdUser() {
         return userByIdUser;
     }
@@ -90,7 +93,7 @@ public class Review {
     }
 
     @ManyToOne
-    @JoinColumn(name = "id_product", referencedColumnName = "id_product", nullable = false)
+    @PrimaryKeyJoinColumn(name = "id_product", referencedColumnName = "id_product")
     public Product getProductByIdProduct() {
         return productByIdProduct;
     }

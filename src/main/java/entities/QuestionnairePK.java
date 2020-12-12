@@ -9,6 +9,9 @@ public class QuestionnairePK implements Serializable {
     private int idProduct;
     private int idQuestion;
 
+    public QuestionnairePK() {
+    }
+
     @Column(name = "id_product", nullable = false)
     @Id
     public int getIdProduct() {

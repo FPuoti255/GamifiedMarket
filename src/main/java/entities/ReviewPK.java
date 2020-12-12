@@ -9,6 +9,9 @@ public class ReviewPK implements Serializable {
     private int idUser;
     private int idProduct;
 
+    public ReviewPK() {
+    }
+
     @Column(name = "id_user", nullable = false)
     @Id
     public int getIdUser() {
