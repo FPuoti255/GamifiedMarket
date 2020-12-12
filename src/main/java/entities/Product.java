@@ -9,7 +9,12 @@ import java.util.Collection;
 @Entity
 @Table(name = "product")
 public class Product {
+
+    @Id
+    @Column(name = "id_product", nullable = false)
+    @OneToMany(mappedBy = "id_product", cascade = CascadeType.ALL, orphanRemoval = true)
     private int idProduct;
+
     private String name;
     private byte[] productImage;
     private Date date;
@@ -18,8 +23,6 @@ public class Product {
     private Collection<Review> reviewsByIdProduct;
     private Collection<Userlog> userlogsByIdProduct;
 
-    @Id
-    @Column(name = "id_product", nullable = false)
     public int getIdProduct() {
         return idProduct;
     }
@@ -28,7 +31,7 @@ public class Product {
         this.idProduct = idProduct;
     }
 
-    @Basic
+
     @Column(name = "name", nullable = false, length = 64)
     public String getName() {
         return name;

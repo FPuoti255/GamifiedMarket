@@ -35,7 +35,7 @@ public class Userlog {
         this.datetime = datetime;
     }
 
-    @Basic
+
     @Column(name = "action", nullable = false, length = 64)
     public String getAction() {
         return action;
@@ -45,8 +45,7 @@ public class Userlog {
         this.action = action;
     }
 
-    @Basic
-    @Column(name = "id_product", nullable = true)
+    @Column(name = "id_product")
     public Integer getIdProduct() {
         return idProduct;
     }

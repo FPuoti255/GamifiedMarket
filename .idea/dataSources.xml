@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="gamified_market/Hibernate" uuid="bb274f5a-9ecc-466e-974b-2e2e3c5e09c7">
+    <data-source source="LOCAL" name="gamified_market@localhost" uuid="edeca2ea-5b96-47d1-9fb6-4003fe7114a0">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <imported>true</imported>
-      <remarks>Hibernate
-
-C:/Users/fpuot/Desktop/GamifiedMarket/src/main/resources/META-INF/persistence.xml</remarks>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/gamified_market</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>

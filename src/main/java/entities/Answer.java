@@ -1,11 +1,13 @@
 package entities;
 
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "answer")
 @IdClass(AnswerPK.class)
 public class Answer {
+
     private int idProduct;
     private int idUser;
     private int idQuestion;
@@ -14,7 +16,8 @@ public class Answer {
     private User userByIdUser;
     private Question questionByIdQuestion;
 
-    @Basic
+    @ManyToOne
+    @JoinColumn(name = "id_product")
     @Column(name = "id_product", nullable = false)
     @Id
     public int getIdProduct() {

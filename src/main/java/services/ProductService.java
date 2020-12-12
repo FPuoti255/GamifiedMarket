@@ -1,10 +1,9 @@
 package services;
 
 import entities.Product;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
+import javax.ejb.Stateless;
+import javax.persistence.*;
 
 @Stateless(name = "ProductService") // should not even provide the name
 public class ProductService {

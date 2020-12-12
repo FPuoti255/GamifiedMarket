@@ -1,9 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="exploded-ejb" name="GamifiedMarket:ejb exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/GamifiedMarket_ejb_exploded</output-path>
-    <root id="root">
-      <element id="javaee-facet-resources" facet="GamifiedMarket/ejb/EJB" />
-      <element id="javaee-facet-classes" facet="GamifiedMarket/ejb/EJB" />
-    </root>
-  </artifact>
-</component>
