@@ -6,6 +6,7 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "user")
+@NamedQuery(name = "User.checkCredentials", query = "SELECT r FROM User r  WHERE r.email = ?1 and r.password = ?2")
 public class User {
     private int idUser;
     private String username;
