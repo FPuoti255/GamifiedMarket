@@ -5,6 +5,7 @@ import entities.Review;
 
 import javax.ejb.Stateless;
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Stateless(name = "ProductService")
@@ -26,6 +27,28 @@ public class ProductService {
 
     public List<Product> getAllProducts(){
         return em.createNamedQuery("Product.findAllProducts", Product.class).getResultList();
+    }
+
+    /**
+     * method to add a review to the specified product. parameters are self explicative
+     * @param IdProduct
+     * @param IdUser
+     * @param reviewTxt
+     * @param date
+     * @return
+     * @author Elia Ravella
+     */
+    public Review addReview(int IdProduct, int IdUser, String reviewTxt, Timestamp date){
+        Review newRev = new Review(IdUser, IdProduct, reviewTxt, date);
+
+        try{
+            em.persist(newRev);
+            em.flush();
+        }catch (Exception x){
+            return null;
+        }
+
+        return newRev;
     }
 }
 

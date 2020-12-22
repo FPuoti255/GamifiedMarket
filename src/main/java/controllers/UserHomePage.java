@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @WebServlet(name = "UserHomePage", value = "/UserHomePage")
@@ -56,6 +58,13 @@ public class UserHomePage extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
+
+        String revText = request.getParameter("userRev");
+        int idUser = (int) ctx.getSession().getAttribute("user");
+        Timestamp tmp = Timestamp.valueOf(LocalDateTime.now());
+        int idProduct = pdrService.getProductOfTheDay().getIdProduct();
+
 
     }
 

@@ -18,6 +18,13 @@ public class Review {
     public Review() {
     }
 
+    public Review(int idUser, int idProduct, String reviewText, Timestamp date) {
+        this.idUser = idUser;
+        this.idProduct = idProduct;
+        this.reviewText = reviewText;
+        this.date = date;
+    }
+
     @Id
     @Column(name = "id_user", nullable = false)
     public int getIdUser() {
