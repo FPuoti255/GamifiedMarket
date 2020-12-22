@@ -8,6 +8,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import services.UserService;
 
 import javax.ejb.EJB;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -52,16 +53,16 @@ public class SignUp extends HttpServlet {
         }
 
 
-        User newuser = usrService.registerNewUser(username, email, password);
-        if (newuser == null) {
+        User newUser = usrService.registerNewUser(username, email, password);
+        if (newUser == null) {
             ctx.setVariable("errorMsg", "Invalid data, username or password already present");
             templateEngine.process(path, ctx, response.getWriter());
             return;
         }
-        //todo: now it's redirect to log in page, but it has to be forwarded to the user home page
-        path = "index.html";
-        ctx.setVariable("errorMsg", "Congratulations! Now sign in to use the app!");
-        templateEngine.process(path, ctx, response.getWriter());
+
+        request.getSession().setAttribute("user", newUser);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/UserHomePage");
+        dispatcher.forward(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

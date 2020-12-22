@@ -1,9 +1,11 @@
 package services;
 
 import entities.Product;
+import entities.Review;
 
 import javax.ejb.Stateless;
 import javax.persistence.*;
+import java.util.List;
 
 @Stateless(name = "ProductService") // should not even provide the name
 public class ProductService {
@@ -13,9 +15,12 @@ public class ProductService {
     public ProductService() {
     }
 
-    public Product getAllProducts() {
-        Product product1 =  em.find(Product.class, 1);
-        return product1;
+    public Product getProductOfTheDay() {
+        return em.createNamedQuery("Product.getProductOfTheDay", Product.class).getSingleResult();
+    }
+
+    public List<Review> getReviews (int productId){
+        return (List<Review>) em.find(Product.class, productId).getReviewsByIdProduct();
     }
 }
 

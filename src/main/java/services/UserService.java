@@ -19,9 +19,12 @@ public class UserService {
         List<User> userList;
         try {
             userList = em.createNamedQuery("User.checkCredentials", User.class)
-                    .setParameter(1, email).setParameter(2, password).getResultList();
+                    .setParameter(1, email)
+                    .setParameter(2, password)
+                    .getResultList();
         }catch(Throwable te){
-                return  null;
+            System.out.println(te.getMessage());
+            return  null;
         }
 
         return (userList.size() != 1) ? null : userList.get(0);
@@ -30,6 +33,8 @@ public class UserService {
     public User registerNewUser(String usrname, String email, String psw){
         User newUsr = new User();
         newUsr.setAdmin(false);
+        newUsr.setActive(true);
+        newUsr.setAuthorized(true);
         newUsr.setEmail(email);
         newUsr.setPassword(psw);
         newUsr.setUsername(usrname);

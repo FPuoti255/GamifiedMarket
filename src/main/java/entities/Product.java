@@ -8,6 +8,7 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "product")
+@NamedQuery(name = "Product.getProductOfTheDay", query = "SELECT p from Product p WHERE p.date = current_date")
 public class Product {
 
     private int idProduct;

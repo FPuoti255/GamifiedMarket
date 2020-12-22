@@ -49,7 +49,6 @@ public class SignIn extends HttpServlet {
 
         User user = usrService.checkCredentials(email, pwd);
 
-
         if (user == null) {
             final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
             ctx.setVariable("errorMsg", "Invalid Credentials");
@@ -57,7 +56,7 @@ public class SignIn extends HttpServlet {
             return;
         }
         request.getSession().setAttribute("user", user);
-        RequestDispatcher dispatcher = request.getServletContext().getRequestDispatcher("/hello");
-        dispatcher.forward(request, response);
+        String servlet = user.isAdmin() ? "AdminHomePage" : "UserHomePage";
+        response.sendRedirect(servlet);
     }
 }
