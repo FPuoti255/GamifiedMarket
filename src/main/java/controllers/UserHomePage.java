@@ -2,6 +2,7 @@ package controllers;
 
 import entities.Product;
 import entities.Review;
+import entities.User;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -59,13 +60,21 @@ public class UserHomePage extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
         final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
+        User sessionUser = (User) request.getSession().getAttribute("user");
 
-        String revText = request.getParameter("userRev");
-        int idUser = (int) ctx.getSession().getAttribute("user");
-        Timestamp tmp = Timestamp.valueOf(LocalDateTime.now());
-        int idProduct = pdrService.getProductOfTheDay().getIdProduct();
+        Review check = pdrService.addReview(
+                pdrService.getProductOfTheDay().getIdProduct(),
+                sessionUser.getIdUser(),
+                request.getParameter("userRev"),
+                Timestamp.valueOf(LocalDateTime.now())
+        );
 
+        if(check == null) {
+            ctx.setVariable("errorMsg", "Error");
+            templateEngine.process(path, ctx, response.getWriter());
+        }
 
+        return;
     }
 
 }
