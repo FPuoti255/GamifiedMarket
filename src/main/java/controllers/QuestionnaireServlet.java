@@ -17,6 +17,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +75,11 @@ public class QuestionnaireServlet extends HttpServlet {
             if (request.getParameter("turnBack") != null) {
                 renderMarketingPage(request, response);
             } else {
+                try {
+                    userQuestionnaire.validateUserQuestionnaire();
+                } catch (SystemException | NotSupportedException e) {
+                    e.printStackTrace();
+                }
                 response.sendRedirect(request.getContextPath() + "/UserHomePage");
             }
         }

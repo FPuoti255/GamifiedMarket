@@ -3,17 +3,21 @@ package services;
 import entities.Answer;
 import entities.Product;
 import entities.Questionnaire;
+import org.eclipse.persistence.annotations.StoredProcedureParameter;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Remove;
-import javax.ejb.Stateful;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.annotation.Resource;
+import javax.ejb.*;
+import javax.persistence.*;
+import java.sql.SQLData;
+import java.sql.SQLType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.PersistenceContextType;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 @Stateful(name = "UserQuestionnaire")
 public class UserQuestionnaire {
@@ -25,7 +29,10 @@ public class UserQuestionnaire {
     When you specify that an injected EntityManager is an extended persistence context, all object instances remain managed.
      */
     @PersistenceContext(unitName = "gamified_market", type = PersistenceContextType.EXTENDED)
-    EntityManager em ;
+    EntityManager em;
+
+    @Resource
+    private UserTransaction utx;
 
     // we assume 0 for marketing section and 1 for statistical section
     int currentUserSection;
@@ -51,7 +58,7 @@ public class UserQuestionnaire {
     }
 
     @PostConstruct
-    public void initialize(){
+    public void initialize() {
         currentUserSection = 0;
         product = pdrService.getProductOfTheDay();
         questions = (List<Questionnaire>) pdrService.getProductOfTheDay().getQuestionnairesByIdProduct();
@@ -59,12 +66,37 @@ public class UserQuestionnaire {
         userStatisticalAnswers = new ArrayList<>();
     }
 
-    @Remove
-    public void validateUserQuestionnaire(){
-
+    public void insertSingleAnswer(Answer asw) throws Exception {
+        int returned = (int) em.createNativeQuery("select insert_answer(?,?,?,?)")
+                .setParameter(1, asw.getIdProduct())
+                .setParameter(2, asw.getIdUser())
+                .setParameter(3, asw.getIdQuestion())
+                .setParameter(4, asw.getAnswerText()).getSingleResult();
+        if (returned == -1) {
+            throw new Exception();
+        }
     }
 
-    public List<Questionnaire> getCurrentSectionQuestions(){
+    public void validateUserQuestionnaire() throws SystemException, NotSupportedException {
+        utx.begin();
+        try {
+            for (Answer asw : this.userMarketingAnswers) {
+                insertSingleAnswer(asw);
+            }
+            for (Answer asw : this.userStatisticalAnswers) {
+                insertSingleAnswer(asw);
+            }
+            utx.commit();
+        } catch (Exception e) {
+            utx.rollback();
+        }
+    }
+
+    @Remove
+    public void remove() {
+    }
+
+    public List<Questionnaire> getCurrentSectionQuestions() {
         int points = (this.currentUserSection == 0 ? 1 : 2);
         return this.questions.stream()
                 .filter(x -> x.getQuestionByIdQuestion().getPoints() == points)
