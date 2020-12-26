@@ -33,6 +33,9 @@
         <div class="row mt-5">
             <a href="#" th:href="@{/QuestionnaireServlet}" >Click here to fill the product's questionnaire</a>
         </div>
+        <div class="row mt-5" th:if="user.isAuthorized()" >
+            <a href="#" th:href="@{/QuestionnarieSummaryPage}">Questionnaires history</a>
+        </div>
     </div>
     <div class="col-7">
         <h2 class="text-success">All reviews from other users</h2>

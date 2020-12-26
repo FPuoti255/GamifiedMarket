@@ -1,5 +1,6 @@
 package services;
 
+import entities.Answer;
 import entities.Product;
 import entities.Questionnaire;
 
@@ -18,9 +19,11 @@ public class QuestionnaireService {
     }
 
     public List<Questionnaire> retrieveQuestionnaire (int idProduct){
-
         return em.createNamedQuery("Questionnaire.getQuestions", Questionnaire.class)
                 .setParameter(1, idProduct).getResultList();
     }
 
+    public List<Answer> retrieveAllQuestionnaires() {
+        return em.createNamedQuery("Answer.getAllAnswers", Answer.class).getResultList();
+    }
 }

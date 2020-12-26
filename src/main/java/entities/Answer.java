@@ -9,6 +9,9 @@ import javax.persistence.*;
 @Entity
 @Table(name = "answer")
 @IdClass(AnswerPK.class)
+@NamedQueries({
+        @NamedQuery(name = "Answer.getAllAnswers", query = "SELECT a FROM Answer a")
+})
 public class Answer {
     public Answer() {
     }

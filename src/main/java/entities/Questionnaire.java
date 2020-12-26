@@ -6,7 +6,8 @@ import javax.persistence.*;
 @Table(name = "questionnaire")
 @IdClass(QuestionnairePK.class)
 @NamedQueries({
-        @NamedQuery(name = "Questionnaire.getQuestions", query = "SELECT q from Questionnaire q WHERE q.idProduct = ?1")
+        @NamedQuery(name = "Questionnaire.getQuestions", query = "SELECT q from Questionnaire q WHERE q.idProduct = ?1"),
+        @NamedQuery(name = "Questionnaire.getAllQuestionnaires", query = "SELECT q FROM Questionnaire q")
 })
 public class Questionnaire {
     private int idProduct;
