@@ -20,6 +20,7 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 @Stateful(name = "UserQuestionnaire")
+@TransactionManagement(TransactionManagementType.BEAN)
 public class UserQuestionnaire {
     /*
     Usually, an EntityManager lives and dies within a JTA transaction.
