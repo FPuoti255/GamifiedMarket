@@ -41,14 +41,25 @@ public class UserHomePage extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        renderPage(request, response, null);
+    }
+
+    protected void renderPage(HttpServletRequest request, HttpServletResponse response, String errorMsg) throws IOException {
+
         final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
+
+        if (errorMsg != null) {
+            ctx.setVariable("errorMsg", errorMsg);
+            templateEngine.process(path, ctx, response.getWriter());
+            return;
+        }
 
         Product dayProduct;
         List<Review> reviews;
-        try{
+        try {
             dayProduct = pdrService.getProductOfTheDay();
             reviews = pdrService.getReviews(dayProduct.getIdProduct());
-        }catch(Throwable e){
+        } catch (Throwable e) {
             ctx.setVariable("errorMsg", "Ops, something went wrong");
             templateEngine.process(path, ctx, response.getWriter());
             return;
@@ -58,8 +69,7 @@ public class UserHomePage extends HttpServlet {
         templateEngine.process(path, ctx, response.getWriter());
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-        final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User sessionUser = (User) request.getSession().getAttribute("user");
 
         Review check = pdrService.addReview(
@@ -69,12 +79,11 @@ public class UserHomePage extends HttpServlet {
                 Timestamp.valueOf(LocalDateTime.now())
         );
 
-        if(check == null) {
-            ctx.setVariable("errorMsg", "Error");
-            templateEngine.process(path, ctx, response.getWriter());
+        if (check == null) {
+            renderPage(request, response, "Ops, something went wrong");
+        } else {
+            renderPage(request, response, null);
         }
-
-        return;
     }
 
 }

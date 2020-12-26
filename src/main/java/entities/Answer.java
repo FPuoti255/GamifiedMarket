@@ -1,11 +1,23 @@
 package entities;
 
 
+import org.eclipse.persistence.annotations.NamedStoredFunctionQuery;
+import org.eclipse.persistence.annotations.StoredProcedureParameter;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "answer")
 @IdClass(AnswerPK.class)
+@NamedStoredFunctionQuery(name = "Answer.insert_answer", functionName = "insert_answer",
+        returnParameter = @StoredProcedureParameter(mode = ParameterMode.OUT , queryParameter = "RETURN" , type = Integer.class),
+        parameters = {
+                @StoredProcedureParameter(mode = ParameterMode.IN, queryParameter = "in_product", type = Integer.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, queryParameter = "in_user", type = Integer.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, queryParameter = "in_question", type = Integer.class),
+                @StoredProcedureParameter(mode = ParameterMode.IN, queryParameter = "in_text", type = String.class),
+                }
+        )
 public class Answer {
     public Answer() {
     }
