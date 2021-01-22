@@ -55,6 +55,7 @@ public class SignIn extends HttpServlet {
             templateEngine.process(path, ctx, response.getWriter());
             return;
         }
+        // todo: implement AdminHomePage
         request.getSession().setAttribute("user", user);
         String servlet = user.isAdmin() ? "AdminHomePage" : "UserHomePage";
         response.sendRedirect(servlet);
