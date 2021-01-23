@@ -14,11 +14,14 @@
 <body>
     <!-- The administrator lands on the "create questionnaire / add product of the day" page -->
     <div th:if="${product == null}" class="mt-5 text-center" >
-        Insert the product of the day!
+        Insert the product of the day! <br />
+        <p th:if="attempted">
+            Retry please, we encountered some errors <br />
+        </p>
         <form action="AdminHomePage" method="post">
             <textarea id="productName" name="productName" cols="50"
                       placeholder="Here goes the name of the product"></textarea> <br/>
-            <a href=""> Insert the image here! // todo add this link </a> <br/>
+            <input id="productImage" name="productImage" type="file">
             <button type="submit" class="btn btn-primary">Add</button>
         </form>
 

@@ -27,7 +27,12 @@ public class Product {
     public Product() {
     }
 
-    @Id
+    public Product(String productName, byte[] productImage, Date productDate){
+
+
+    }
+
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_product", nullable = false)
     public int getIdProduct() {
         return idProduct;

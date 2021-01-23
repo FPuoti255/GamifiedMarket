@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 
 @WebServlet(name = "AdminHomePage", value = "/AdminHomePage")
 public class AdminHomePage extends HttpServlet {
@@ -37,9 +39,10 @@ public class AdminHomePage extends HttpServlet {
 
 
     /**
-     * main method of the servlet, overide of the original HttpServlet.doGet method.
+     * main method of the servlet, override of the original HttpServlet.doGet method.
      * renders the landing page of the administration, in the form of a "create new product" / "add
      * questionnaire to current product" page
+     *
      * @param req
      * @param resp
      * @throws ServletException
@@ -51,7 +54,36 @@ public class AdminHomePage extends HttpServlet {
 
         Product dayProduct = products.getProductOfTheDay();
         context.setVariable("product", dayProduct);
+        context.setVariable("attempted", false);
         templateEngine.process(path, context, resp.getWriter());
 
+    }
+
+    /**
+     * this method intercepts the action of adding a product to the application
+     *
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
+     */
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        /**
+         * marshal the parameters from the form and invoke the
+         * productService to add the product to the database
+         */
+        Product p = products.addProduct(
+                req.getParameter("productName"),
+                req.getParameter("productImage").getBytes(),
+                Date.valueOf(LocalDate.now())
+        );
+
+        /**
+         * check if insertion went good and reload page
+         */
+        WebContext context = new WebContext(req, resp, getServletContext(), req.getLocale());
+        if(p == null) context.setVariable("attempted", true);
+        templateEngine.process(path, context, resp.getWriter());
     }
 }
