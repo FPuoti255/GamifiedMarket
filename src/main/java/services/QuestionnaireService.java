@@ -2,6 +2,7 @@ package services;
 
 import entities.Answer;
 import entities.Product;
+import entities.Question;
 import entities.Questionnaire;
 
 import javax.ejb.Stateless;
@@ -25,5 +26,9 @@ public class QuestionnaireService {
 
     public List<Answer> retrieveAllQuestionnaires() {
         return em.createNamedQuery("Answer.getAllAnswers", Answer.class).getResultList();
+    }
+
+    public void addQuestion(int idProduct, Question qst){
+        // todo implement this method
     }
 }

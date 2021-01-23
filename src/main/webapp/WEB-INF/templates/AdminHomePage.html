@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      lang="en" th:lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Meta tag required for boostrap -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>AdminPage</title>
+</head>
+<body>
+    <!-- The administrator lands on the "create questionnaire / add product of the day" page -->
+    <div th:if="${product == null}" class="mt-5 text-center" >
+        Insert the product of the day!
+        <form action="AdminHomePage" method="post">
+            <textarea id="productName" name="productName" cols="50"
+                      placeholder="Here goes the name of the product"></textarea> <br/>
+            <a href=""> Insert the image here! // todo add this link </a> <br/>
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+
+    </div>
+    <div th:unless="${product == null}">
+        <p class="mt-5 text-center" th:text="${product.getName()}"></p>
+        <br />
+        <img class="img-thumbnail text-center" th:src="*{'data:image/png;base64,'+ product.getProductImage()}"
+             alt="ProductImage" th:alt="'Image of: '+ ${product.getName()}">
+        <a href="AddQuestions"> Add questionnaire questions </a>
+    </div>
+
+</body>
+</html>

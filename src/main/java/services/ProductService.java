@@ -18,7 +18,14 @@ public class ProductService {
     }
 
     public Product getProductOfTheDay() {
-        return em.createNamedQuery("Product.getProductOfTheDay", Product.class).getSingleResult();
+        Product productOfTheDay;
+        try{
+            productOfTheDay = em.createNamedQuery("Product.getProductOfTheDay", Product.class).getSingleResult();
+        }catch(Exception e){
+            productOfTheDay = null;
+        }
+
+        return productOfTheDay;
     }
 
     public List<Review> getReviews (int productId){
