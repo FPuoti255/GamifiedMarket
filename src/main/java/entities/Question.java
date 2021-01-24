@@ -1,11 +1,17 @@
 package entities;
 
+import javax.annotation.Generated;
 import javax.persistence.*;
 
 import java.util.Collection;
 
 @Entity
 @Table(name = "question")
+@NamedQueries(
+        {
+                @NamedQuery(name = "Question.findAllQuestions", query = "select q from Question q")
+        }
+)
 public class Question {
     private int idQuestion;
     private String questionText;
@@ -14,6 +20,11 @@ public class Question {
     private Collection<Questionnaire> questionnairesByIdQuestion;
 
     public Question() {
+    }
+
+    public Question(String questionText, int points){
+        this.questionText = questionText;
+        this.points = points;
     }
 
     @Id
@@ -25,7 +36,6 @@ public class Question {
     public void setIdQuestion(int idQuestion) {
         this.idQuestion = idQuestion;
     }
-
 
     @Column(name = "question_text", nullable = false, length = 255)
     public String getQuestionText() {

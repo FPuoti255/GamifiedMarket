@@ -13,7 +13,26 @@
 </head>
 <body>
     <!-- In this page, the site admin can add a number of questions to the questionnaire associated to the product of the day-->
-    <div class="mt-5 text-center">Accanna ste questions</div>
+    <div class="mt-5 text-center">
+        Product: <div th:text="${product.getName()}"></div>
+    </div>
+    <hr />
+    <form action="AddQuestions" method="post" class="text-center">
+        Add a new question in the box below: <br />
+        <textarea id="questionText" name="questionText" cols="50"></textarea>
+        <input type="checkbox" id="facultativeQuestion" name="statisticQuestion">This a facultative question</input>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+    <div th:if="${questions.size() > 0}">
+        <ul th:each="question : ${questions}">
+            <li>
+                <label th:text="${question.getIdQuestion()}"></label>
+                <label th:text="${question.getQuestionText()}"></label> <br />
+                Points: <label th:text="${question.getPoints()}"></label>
+                <hr />
+            </li>
+        </ul>
+    </div>
 
 </body>
 </html>
