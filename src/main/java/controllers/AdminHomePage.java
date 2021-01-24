@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
-import java.time.LocalDate;
 
 @WebServlet(name = "AdminHomePage", value = "/AdminHomePage")
 public class AdminHomePage extends HttpServlet {
@@ -54,9 +53,7 @@ public class AdminHomePage extends HttpServlet {
 
         Product dayProduct = products.getProductOfTheDay();
         context.setVariable("product", dayProduct);
-        context.setVariable("attempted", false);
         templateEngine.process(path, context, resp.getWriter());
-
     }
 
     /**
@@ -76,14 +73,14 @@ public class AdminHomePage extends HttpServlet {
         Product p = products.addProduct(
                 req.getParameter("productName"),
                 req.getParameter("productImage").getBytes(),
-                Date.valueOf(LocalDate.now())
+                Date.valueOf(req.getParameter("productDate"))
         );
 
         /**
-         * check if insertion went good and reload page
+         * reload page
+         * it's done by redirecting to this page instead of reprocessing the template to
+         * trigger a get call and a subsequent refresh of the elements
          */
-        WebContext context = new WebContext(req, resp, getServletContext(), req.getLocale());
-        if(p == null) context.setVariable("attempted", true);
-        templateEngine.process(path, context, resp.getWriter());
+        resp.sendRedirect(path);
     }
 }

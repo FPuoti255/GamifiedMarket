@@ -13,26 +13,26 @@
 </head>
 <body>
     <!-- The administrator lands on the "create questionnaire / add product of the day" page -->
-    <div th:if="${product == null}" class="mt-5 text-center" >
-        Insert the product of the day! <br />
-        <p th:if="attempted">
-            Retry please, we encountered some errors <br />
-        </p>
+    <div class="mt-5 text-center" >
+        Insert a new product! <br />
         <form action="AdminHomePage" method="post">
             <textarea id="productName" name="productName" cols="50"
                       placeholder="Here goes the name of the product"></textarea> <br/>
             <input id="productImage" name="productImage" type="file">
+            <input id="productDate" name="productDate" type="date">
             <button type="submit" class="btn btn-primary">Add</button>
         </form>
 
     </div>
-    <div th:unless="${product == null}">
-        <p class="mt-5 text-center" th:text="${product.getName()}"></p>
+    <div th:unless="${product == null}" class="mt-5 text-center">
+        Product of today:
+        <p th:text="${product.getName()}"></p>
         <br />
         <img class="img-thumbnail text-center" th:src="*{'data:image/png;base64,'+ product.getProductImage()}"
              alt="ProductImage" th:alt="'Image of: '+ ${product.getName()}">
         <a href="AddQuestions"> Add questionnaire questions </a>
     </div>
+
 
 </body>
 </html>

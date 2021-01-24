@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless(name = "ProductService")
@@ -56,6 +57,8 @@ public class ProductService {
             return null;
         }
 
+        refresh();
+
         return newRev;
     }
 
@@ -64,7 +67,7 @@ public class ProductService {
      *
      * @param productName the product name
      * @param productImage the image
-     * @param productDate the date in which this prpduct is product of the day
+     * @param productDate the date in which this product is product of the day
      * @return
      */
     public Product addProduct(String productName, byte[] productImage, Date productDate){
@@ -76,8 +79,17 @@ public class ProductService {
         }catch (Exception x){
             return null;
         }
-
+        refresh();
         return newProduct;
+    }
+
+    /**
+     * refresh routine for the entity manager.
+     */
+    private void refresh(){
+        em.clear();
+        List<Product> ps = em.createNamedQuery("Product.findAllProducts", Product.class).getResultList();
+        for(Product p : ps) em.refresh(p);
     }
 }
 
