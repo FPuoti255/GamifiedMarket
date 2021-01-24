@@ -54,6 +54,7 @@ public class QuestionnaireService {
         em.flush();
         refresh();
 
+        // todo why in this point the toAdd.getIdQuestion is like not initialized?
         Questionnaire toAddQ = new Questionnaire();
         toAddQ.setIdProduct(idProduct);
         toAddQ.setIdQuestion(toAdd.getIdQuestion());
