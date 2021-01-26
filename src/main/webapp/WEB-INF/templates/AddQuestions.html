@@ -19,8 +19,8 @@
     <hr />
     <form action="AddQuestions" method="post" class="text-center">
         Add a new question in the box below: <br />
-        <textarea id="questionText" name="questionText" cols="50"></textarea>
-        <input type="checkbox" id="facultativeQuestion" name="statisticQuestion">This a facultative question</input>
+        <textarea id="questionText" name="questionText" cols="50"></textarea><br />
+        <textarea id="questionType" name="questionType" cols="50" rows="1" placeholder="insert facultative/mandatory"></textarea><br />
         <button type="submit" class="btn btn-primary">Add</button>
     </form>
     <div th:if="${questions.size() > 0}">

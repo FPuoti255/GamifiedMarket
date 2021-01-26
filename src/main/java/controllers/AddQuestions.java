@@ -6,6 +6,7 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import services.ProductService;
+import services.QuestionService;
 import services.QuestionnaireService;
 
 import javax.ejb.EJB;
@@ -25,6 +26,9 @@ public class AddQuestions extends HttpServlet {
     @EJB(beanName = "QuestionnaireService")
     QuestionnaireService questions;
 
+    @EJB(beanName = "QuestionService")
+    QuestionService qs;
+
     private final TemplateEngine templateEngine = new TemplateEngine();
     private final String path = "AddQuestions";
 
@@ -42,10 +46,6 @@ public class AddQuestions extends HttpServlet {
     /**
      * loads the list of questions already correlated to this product, which is also added to the context
      *
-     * @param req
-     * @param resp
-     * @throws ServletException
-     * @throws IOException
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -60,16 +60,19 @@ public class AddQuestions extends HttpServlet {
         templateEngine.process(path, context, resp.getWriter());
     }
 
+    /**
+     * the post method is used to associate a question to the product.
+     * the product is the product of the day.
+     * */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // prepare the question to be added
-        // statistical questions got double points
-        questions.addQuestion(
-                products.getProductOfTheDay().getIdProduct(),
-                req.getParameter("questionText"),
-                req.getParameter("facultativeQuestion") == "true" ? 2 : 1
-        );
+        String questionText = req.getParameter("questionText");
+        int questionPoints = req.getParameter("questionType").equals("facultative") ? 2 : 1;
 
-        resp.sendRedirect(path);
+        Question added = qs.addQuestion(questionText, questionPoints);
+        questions.linkQuestionToProduct(
+                added,
+                products.getProductOfTheDay()
+        );
     }
 }

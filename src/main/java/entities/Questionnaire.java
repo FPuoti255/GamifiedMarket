@@ -18,6 +18,11 @@ public class Questionnaire {
     public Questionnaire() {
     }
 
+    public Questionnaire(int idProduct, int idQuestion) {
+        this.idProduct = idProduct;
+        this.idQuestion = idQuestion;
+    }
+
     @Id
     @Column(name = "id_product", nullable = false)
     public int getIdProduct() {

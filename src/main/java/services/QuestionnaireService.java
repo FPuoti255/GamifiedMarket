@@ -43,31 +43,11 @@ public class QuestionnaireService {
         return em.createNamedQuery("Answer.getAllAnswers", Answer.class).getResultList();
     }
 
-    /**
-     * this method creates 2 object: the actual question and the element in
-     * the questionnaire table that links the question to the product
-     *
-     */
-    public void addQuestion(int idProduct, String questionText, int questionPoints){
-        Question toAdd = new Question(questionText, questionPoints);
-        em.persist(toAdd);
+    public void linkQuestionToProduct(Question q, Product p){
+        em.persist(new Questionnaire(
+                p.getIdProduct(),
+                q.getIdQuestion()
+        ));
         em.flush();
-        refresh();
-
-        // todo why in this point the toAdd.getIdQuestion is like not initialized?
-        Questionnaire toAddQ = new Questionnaire();
-        toAddQ.setIdProduct(idProduct);
-        toAddQ.setIdQuestion(toAdd.getIdQuestion());
-        em.persist(toAddQ);
-        em.flush();
-        refresh();
-    }
-
-    private void refresh(){
-        em.clear();
-        List<Question> qs = em.createNamedQuery("Question.findAllQuestions").getResultList();
-        for(Question q : qs) em.refresh(q);
-        List<Questionnaire> ps = em.createNamedQuery("Questionnaire.getAllQuestionnaires", Questionnaire.class).getResultList();
-        for(Questionnaire p : ps) em.refresh(p);
     }
 }

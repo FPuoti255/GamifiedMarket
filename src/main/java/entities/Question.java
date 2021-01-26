@@ -9,7 +9,8 @@ import java.util.Collection;
 @Table(name = "question")
 @NamedQueries(
         {
-                @NamedQuery(name = "Question.findAllQuestions", query = "select q from Question q")
+                @NamedQuery(name = "Question.findAllQuestions", query = "select q from Question q"),
+                @NamedQuery(name = "Question.findQuestionIdByText", query = "select q.idQuestion from Question q where q.questionText = ?1")
         }
 )
 public class Question {
