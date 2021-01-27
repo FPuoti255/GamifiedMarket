@@ -80,6 +80,11 @@ public class Question {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return this.idQuestion + " " + this.questionText;
+    }
+
     @OneToMany(mappedBy = "questionByIdQuestion")
     public Collection<Answer> getAnswersByIdQuestion() {
         return answersByIdQuestion;

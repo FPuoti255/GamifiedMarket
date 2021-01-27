@@ -1,10 +1,13 @@
 package services;
 
 import entities.Question;
+import entities.Questionnaire;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
+import java.util.List;
 
 @Stateless(name = "QuestionService")
 public class QuestionService {
@@ -14,13 +17,27 @@ public class QuestionService {
     public QuestionService() {
     }
 
-    public Question addQuestion(String questionText, int questionPoints){
+    /**
+     * adds a question to the database
+     */
+    public void addQuestion(String questionText, int questionPoints){
         Question q = new Question(
             questionText,
             questionPoints
         );
         em.persist(q);
         em.flush();
-        return q;
+    }
+
+    /**
+     * I know we've defined the named query, but it does not work
+     * @param qText the text of the question searched
+     * @return the question id
+     */
+    public int findQuestionByText(String qText){
+        for(Question q : (List<Question>)em.createNamedQuery("Question.findAllQuestions").getResultList()){
+            if(q.getQuestionText().equals(qText)) return q.getIdQuestion();
+        }
+        return -1;
     }
 }

@@ -69,10 +69,13 @@ public class AddQuestions extends HttpServlet {
         String questionText = req.getParameter("questionText");
         int questionPoints = req.getParameter("questionType").equals("facultative") ? 2 : 1;
 
-        Question added = qs.addQuestion(questionText, questionPoints);
+        qs.addQuestion(questionText, questionPoints);
+
         questions.linkQuestionToProduct(
-                added,
-                products.getProductOfTheDay()
+                qs.findQuestionByText(questionText),
+                products.getProductOfTheDay().getIdProduct()
         );
+
+        resp.sendRedirect(path);
     }
 }
