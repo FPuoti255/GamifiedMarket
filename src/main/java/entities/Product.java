@@ -10,6 +10,7 @@ import java.util.Collection;
 @Table(name = "product")
 @NamedQueries({
         @NamedQuery(name = "Product.findAllProducts", query = "select p from Product p"),
+        @NamedQuery(name = "Product.getPastProduct", query = "SELECT p from Product p WHERE p.date < current_date"),
         @NamedQuery(name = "Product.getProductOfTheDay", query = "SELECT p from Product p WHERE p.date = current_date")
 })
 public class Product {

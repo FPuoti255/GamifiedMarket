@@ -19,11 +19,12 @@
             <textarea id="productName" name="productName" cols="50"
                       placeholder="Here goes the name of the product"></textarea> <br/>
             <input id="productImage" name="productImage" type="file">
-            <input id="productDate" name="productDate" type="date">
+            <input id="productDate" name="productDate" type="date" min="${today.toString()}">
             <button type="submit" class="btn btn-primary">Add</button>
         </form>
-
     </div>
+
+    <!-- Box for the product of the day -->
     <div th:unless="${product == null}" class="mt-5 text-center">
         Product of today:
         <p th:text="${product.getName()}"></p>
@@ -33,6 +34,10 @@
         <a href="AddQuestions"> Add questionnaire questions </a>
     </div>
 
+    <!-- Link to the reviewQuestionnaire page -->
+    <div  class="mt-5 text-center">
+        <a href="ReviewQuestionnaires"> Review past questionnaires </a>
+    </div>
 
 </body>
 </html>

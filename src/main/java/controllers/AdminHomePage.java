@@ -15,12 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
+import java.time.LocalDate;
 
 @WebServlet(name = "AdminHomePage", value = "/AdminHomePage")
 public class AdminHomePage extends HttpServlet {
     @EJB(beanName = "ProductService")
     ProductService products;
-
 
     private final TemplateEngine templateEngine = new TemplateEngine();
     private final String path = "AdminHomePage";
@@ -53,6 +53,7 @@ public class AdminHomePage extends HttpServlet {
 
         Product dayProduct = products.getProductOfTheDay();
         context.setVariable("product", dayProduct);
+        context.setVariable("today", LocalDate.now());
         templateEngine.process(path, context, resp.getWriter());
     }
 

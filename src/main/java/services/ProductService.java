@@ -91,5 +91,9 @@ public class ProductService {
         List<Product> ps = em.createNamedQuery("Product.findAllProducts", Product.class).getResultList();
         for(Product p : ps) em.refresh(p);
     }
+
+    public List<Product> getPastProducts() {
+        return em.createNamedQuery("Product.getPastProduct", Product.class).getResultList();
+    }
 }
 
