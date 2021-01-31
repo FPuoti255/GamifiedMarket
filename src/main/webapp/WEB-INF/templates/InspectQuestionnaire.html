@@ -26,12 +26,12 @@
                 <label th:text="${question.getPoints() > 1 ? 'Mandatory' : 'Facultative'}"></label> <br />
                 <label th:text="${question.getIdQuestion()}"></label>
                 <label th:text="${question.getQuestionText()}"></label>
-                <br /><br />
 
                 <!-- sublist of answers -->
                 <div class="mt-5 text-center">
                     <ul th:each="answer : ${answers}">
-                        <li th:if="${answer.getIdQuestion() == question.getIdQuestion()}">
+                        <li th:if="${answer.getIdQuestion() == question.getIdQuestion() && answer.getIdProduct() == product.getIdProduct()}">
+                            <label th:text="${answer.getUserByIdUser().getUsername()}"></label> :
                             <label th:text="${answer.getAnswerText()}"></label>
                         </li>
                     </ul>
