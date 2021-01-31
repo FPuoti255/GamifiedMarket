@@ -30,6 +30,14 @@ public class ProductService {
         return productOfTheDay;
     }
 
+    /**
+     * I need this function to get detailed information from a call that provides only the
+     * product's ID
+     */
+    public Product getProductById(int productId){
+        return em.createNamedQuery("Product.getProductByIdProduct", Product.class).setParameter("idProduct", productId).getSingleResult();
+    }
+
     public List<Review> getReviews (int productId){
         return (List<Review>) em.find(Product.class, productId).getReviewsByIdProduct();
     }
@@ -40,11 +48,6 @@ public class ProductService {
 
     /**
      * method to add a review to the specified product. parameters are self explicative
-     * @param IdProduct
-     * @param IdUser
-     * @param reviewTxt
-     * @param date
-     * @return
      * @author Elia Ravella
      */
     public Review addReview(int IdProduct, int IdUser, String reviewTxt, Timestamp date){

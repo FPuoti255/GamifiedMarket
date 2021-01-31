@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" th:lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Meta tag required for boostrap -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>ReviewQuestionnaires</title>
+</head>
+<body>
+    <a th:href="@{/ReviewQuestionnaires}"> Back to questionnaires list </a>
+    <!-- main div with product information -->
+    <div class="mt-5 text-center">
+        <label th:text="${product.getName()}"></label>
+        <img class="img-thumbnail text-center" th:src="*{'data:image/png;base64,'+ product.getProductImage()}"
+             alt="ProductImage" th:alt="'Image of: '+ ${product.getName()}">
+    </div>
+
+    <!-- list of questions -->
+    <div class="mt-5 text-center">
+        <ul th:each="question : ${questions}">
+            <li>
+                <label th:text="${question.getPoints() > 1 ? 'Mandatory' : 'Facultative'}"></label> <br />
+                <label th:text="${question.getIdQuestion()}"></label>
+                <label th:text="${question.getQuestionText()}"></label>
+                <br /><br />
+
+                <!-- sublist of answers -->
+                <div class="mt-5 text-center">
+                    <ul th:each="answer : ${answers}">
+                        <li th:if="${answer.getIdQuestion() == question.getIdQuestion()}">
+                            <label th:text="${answer.getAnswerText()}"></label>
+                        </li>
+                    </ul>
+                    <hr />
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</body>
+</html>

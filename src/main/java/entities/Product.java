@@ -11,7 +11,8 @@ import java.util.Collection;
 @NamedQueries({
         @NamedQuery(name = "Product.findAllProducts", query = "select p from Product p"),
         @NamedQuery(name = "Product.getPastProduct", query = "SELECT p from Product p WHERE p.date < current_date"),
-        @NamedQuery(name = "Product.getProductOfTheDay", query = "SELECT p from Product p WHERE p.date = current_date")
+        @NamedQuery(name = "Product.getProductOfTheDay", query = "SELECT p from Product p WHERE p.date = current_date"),
+        @NamedQuery(name = "Product.getProductByIdProduct", query = "SELECT p FROM Product p where p.idProduct = :idProduct")
 })
 public class Product {
 

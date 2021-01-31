@@ -17,9 +17,13 @@
         <div th:if="${products.size() > 0}">
             <ul th:each="product : ${products}">
                 <li>
-                    <label th:text="${product.getName()}"></label>
-                    <img class="img-thumbnail" th:src="*{'data:image/png;base64,'+ product.getProductImage()}">
-                    <hr />
+                    <!-- Every product has the name displayed and the "inspect" option available -->
+                    <form>
+                        <label th:text="${product.getName()}"></label>
+                        <img class="img-thumbnail" th:src="*{'data:image/png;base64,'+ product.getProductImage()}">
+                        <a th:href="@{/InspectQuestionnaire(productId=${product.getIdProduct()})}" type="submit"> Inspect </a>
+                        <hr />
+                    </form>
                 </li>
             </ul>
         </div>
