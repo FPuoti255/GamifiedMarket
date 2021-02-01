@@ -19,6 +19,12 @@
              alt="ProductImage" th:alt="'Image of: '+ ${product.getName()}">
     </div>
 
+    <!-- general information about the questionnaire-->
+    <div class="mt-5 text-center">
+        Users that completed the questionnaire: <label th:text="${answers.size() / questions.size()}"></label> <br />
+        Users that cancelled the questionnaire: <!-- TODO implement this log function. -->
+    </div>
+
     <!-- list of questions -->
     <div class="mt-5 text-center">
         <ul th:each="question : ${questions}">
@@ -28,6 +34,7 @@
                 <label th:text="${question.getQuestionText()}"></label>
 
                 <!-- sublist of answers -->
+                <!-- the page displays the answers grouped by the question -->
                 <div class="mt-5 text-center">
                     <ul th:each="answer : ${answers}">
                         <li th:if="${answer.getIdQuestion() == question.getIdQuestion() && answer.getIdProduct() == product.getIdProduct()}">
@@ -39,6 +46,11 @@
                 </div>
             </li>
         </ul>
+    </div>
+
+    <!-- Cancelling questionnaire -->
+    <div class="mt-5 text-center">
+        <a th:href="@{/RemoveQuestionnaire(idProduct=${product.getIdProduct()})}" type="submit"> Remove this product and all associated data? </a>
     </div>
 
 </body>

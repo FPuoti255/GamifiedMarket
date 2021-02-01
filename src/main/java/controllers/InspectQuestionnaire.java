@@ -1,6 +1,7 @@
 package controllers;
 
 import entities.Answer;
+import entities.Product;
 import entities.Question;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -29,9 +30,6 @@ public class InspectQuestionnaire extends HttpServlet {
     @EJB(beanName = "QuestionnaireService")
     QuestionnaireService links;
 
-    @EJB(beanName = "QuestionService")
-    QuestionService questions;
-
     private final TemplateEngine engine = new TemplateEngine();
     private final String localPath = "InspectQuestionnaire";
 
@@ -57,7 +55,7 @@ public class InspectQuestionnaire extends HttpServlet {
         // get the questions
         List<Question> questions = links.retrieveQuestions(idProduct);
 
-        // get all the answers
+        // get all the answers: the template will sort them out accordingly
         List<Answer> answers = new ArrayList<>();
         for(Question q : questions){
             answers.addAll(q.getAnswersByIdQuestion());
@@ -80,11 +78,5 @@ public class InspectQuestionnaire extends HttpServlet {
         );
 
         engine.process(localPath, context, resp.getWriter());
-
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
     }
 }

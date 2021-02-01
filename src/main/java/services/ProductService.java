@@ -98,5 +98,20 @@ public class ProductService {
     public List<Product> getPastProducts() {
         return em.createNamedQuery("Product.getPastProduct", Product.class).getResultList();
     }
+
+    /**
+     * method to remove a product from the DB. the actual schema has a predefined procedure to do so,
+     * so we use it.
+     * @param toRemoveProductId the product's id
+     */
+    public void removeProduct(int toRemoveProductId) {
+        em.createNativeQuery("{call delete_questionnaires_details(?)}")
+                .setParameter(1, toRemoveProductId)
+                .executeUpdate();
+
+        em.remove(getProductById(toRemoveProductId));
+        em.flush();
+        refresh();
+    }
 }
 
