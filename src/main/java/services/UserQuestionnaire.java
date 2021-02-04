@@ -1,27 +1,32 @@
 package services;
 
-import entities.Answer;
-import entities.Product;
-import entities.Questionnaire;
-import org.eclipse.persistence.annotations.StoredProcedureParameter;
+import Utils.QuestionnaireSection;
+import entities.*;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.*;
+import javax.enterprise.context.SessionScoped;
 import javax.persistence.*;
-import java.sql.SQLData;
-import java.sql.SQLType;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-@Stateful(name = "UserQuestionnaire")
+/**
+ * Http Session is a perfect storage place where all request from same web client have access
+ * to all attributes stored in http session. So you ask for it from the container and keep it in a place (http session)
+ * from where it can be referred again by all requests for same session.
+ * Therefore, if in the session there's no attribute userQuestionnaire, it means that it's the first time the user is fulfilling
+ * the product's questionnaire
+ */
+@SessionScoped
+@Stateful
 @TransactionManagement(TransactionManagementType.BEAN)
-public class UserQuestionnaire {
+public class UserQuestionnaire implements Serializable {
     /*
     Usually, an EntityManager lives and dies within a JTA transaction.
     Once the transaction is finished, all persistent objects are detached from the EntityManager and are no longer managed.
@@ -35,22 +40,13 @@ public class UserQuestionnaire {
     @Resource
     private UserTransaction utx;
 
-    // we assume 0 for marketing section and 1 for statistical section
-    int currentUserSection;
-
-    public int getCurrentUserSection() {
-        return currentUserSection;
-    }
-
-    public void setCurrentUserSection(int currentUserSection) {
-        this.currentUserSection = currentUserSection;
-    }
+    QuestionnaireSection currentUserSection;
 
     Product product;
     List<Questionnaire> questions;
 
-    List<Answer> userMarketingAnswers;
-    List<Answer> userStatisticalAnswers;
+    final List<Answer> userMarketingAnswers = new ArrayList<>();
+    final List<Answer> userStatisticalAnswers = new ArrayList<>();
 
     @EJB(name = "ProductService")
     ProductService pdrService;
@@ -58,13 +54,13 @@ public class UserQuestionnaire {
     public UserQuestionnaire() {
     }
 
+
+
     @PostConstruct
     public void initialize() {
-        currentUserSection = 0;
+        currentUserSection = QuestionnaireSection.MARKETING;
         product = pdrService.getProductOfTheDay();
         questions = (List<Questionnaire>) pdrService.getProductOfTheDay().getQuestionnairesByIdProduct();
-        userMarketingAnswers = new ArrayList<>();
-        userStatisticalAnswers = new ArrayList<>();
     }
 
     public void insertSingleAnswer(Answer asw) throws Exception {
@@ -84,8 +80,11 @@ public class UserQuestionnaire {
             for (Answer asw : this.userMarketingAnswers) {
                 insertSingleAnswer(asw);
             }
-            for (Answer asw : this.userStatisticalAnswers) {
-                insertSingleAnswer(asw);
+            if(! this.userStatisticalAnswers.isEmpty()){
+                for (Answer asw : this.userStatisticalAnswers) {
+                    insertSingleAnswer(asw);
+                }
+
             }
             utx.commit();
         } catch (Exception e) {
@@ -93,15 +92,29 @@ public class UserQuestionnaire {
         }
     }
 
+    public boolean alreadyFulfilled (User currentUser){
+        UserQuestionnairePointsPK pk = new UserQuestionnairePointsPK(product.getIdProduct(), currentUser.getIdUser());
+        UserQuestionnairePoints uqp = em.find(UserQuestionnairePoints.class, pk);
+        return uqp != null;
+    }
+
     @Remove
     public void remove() {
     }
 
     public List<Questionnaire> getCurrentSectionQuestions() {
-        int points = (this.currentUserSection == 0 ? 1 : 2);
+        int points = (this.currentUserSection == QuestionnaireSection.MARKETING ? 1 : 2);
         return this.questions.stream()
                 .filter(x -> x.getQuestionByIdQuestion().getPoints() == points)
                 .collect(Collectors.toList());
+    }
+
+    public QuestionnaireSection getCurrentUserSection() {
+        return currentUserSection;
+    }
+
+    public void setCurrentUserSection(QuestionnaireSection currentUserSection) {
+        this.currentUserSection = currentUserSection;
     }
 
     public Product getProduct() {
@@ -125,7 +138,7 @@ public class UserQuestionnaire {
     }
 
     public void setUserMarketingAnswers(List<Answer> userMarketingAnswers) {
-        this.userMarketingAnswers = userMarketingAnswers;
+        this.userMarketingAnswers.addAll(userMarketingAnswers);
     }
 
     public List<Answer> getUserStatisticalAnswers() {
@@ -133,6 +146,11 @@ public class UserQuestionnaire {
     }
 
     public void setUserStatisticalAnswers(List<Answer> userStatisticalAnswers) {
-        this.userStatisticalAnswers = userStatisticalAnswers;
+        this.userStatisticalAnswers.addAll(userStatisticalAnswers);
+    }
+
+    public void invalidateBean() {
+        userMarketingAnswers.clear();
+        userStatisticalAnswers.clear();
     }
 }

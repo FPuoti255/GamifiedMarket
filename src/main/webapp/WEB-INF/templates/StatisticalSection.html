@@ -7,8 +7,6 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-
-    <script charset="utf-8" defer src="/jsFiles/QuestionnairePage.js"></script>
     <title>Questionnaire</title>
 </head>
 <body>
@@ -18,14 +16,14 @@
 <div class="row my-5 mx-2 justify-content-center">
     <div class="col-4">
         <h2 class="text-success" th:text="${product.getName()}">Questionnaire's product</h2>
-        <img class="img-thumbnail" th:src="*{'data:image/png;base64,'+ product.getProductImage()}"
+        <img class="img-thumbnail" th:src="*{'data:image/png;base64,'+ product.imageString()}"
              alt="TestImage" th:alt="'Image of: '+ ${product.getName()}">
     </div>
     <div class="col-7">
         <label for="marketingSection"
                class="fst-italic text-decoration-underline">These are the statistical section of the questionnaire.
             The questions are not mandatory.</label>
-        <form id="marketingSection" action="QuestionnaireServlet" method="post">
+        <form id="marketingSection" action="QuestionnaireServletStatistical" method="post">
             <ul th:if="${answers == null}" th:each="qstn : ${questions}">
                 <li>
                     <label th:for="${qstn.getIdQuestion()}" th:text="${qstn.getQuestionByIdQuestion().getQuestionText()}">question text</label>

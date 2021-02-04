@@ -66,6 +66,7 @@ public class UserHomePage extends HttpServlet {
         }
         ctx.setVariable("product", dayProduct);
         ctx.setVariable("reviews", reviews);
+        ctx.setVariable("user", (User) request.getSession().getAttribute("user"));
         templateEngine.process(path, ctx, response.getWriter());
     }
 

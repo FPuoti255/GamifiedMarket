@@ -20,7 +20,7 @@
         <div class="row">
             <h2 class="text-success">Product of the day</h2>
             <p class="text-success" th:text="${product.getName()}"></p>
-            <img class="img-thumbnail" th:src="*{'data:image/png;base64,'+ product.getProductImage()}"
+            <img class="img-thumbnail" th:src="*{'data:image/png;base64,'+ product.imageString()}"
                  alt="TestImage" th:alt="'Image of: '+ ${product.getName()}">
         </div>
         <div class="row mt-5">
@@ -31,10 +31,10 @@
             </form>
         </div>
         <div class="row mt-5">
-            <a href="#" th:href="@{/QuestionnaireServlet}" >Click here to fill the product's questionnaire</a>
+            <a href="#" th:href="@{/QuestionnaireServletMarketing}" >Click here to fill the product's questionnaire</a>
         </div>
-        <div class="row mt-5" th:if="user.isAuthorized()" >
-            <a href="#" th:href="@{/QuestionnarieSummaryPage}">Questionnaires history</a>
+        <div class="row mt-5" th:if="${user.isAuthorized()}" >
+            <a href="#" th:href="@{/QuestionnaireSummary}">Questionnaires history</a>
         </div>
     </div>
     <div class="col-7">

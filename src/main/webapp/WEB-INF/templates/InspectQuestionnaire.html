@@ -15,7 +15,7 @@
     <!-- main div with product information -->
     <div class="mt-5 text-center">
         <label th:text="${product.getName()}"></label>
-        <img class="img-thumbnail text-center" th:src="*{'data:image/png;base64,'+ product.getProductImage()}"
+        <img class="img-thumbnail text-center" th:src="*{'data:image/png;base64,'+ product.imageString()}"
              alt="ProductImage" th:alt="'Image of: '+ ${product.getName()}">
     </div>
 

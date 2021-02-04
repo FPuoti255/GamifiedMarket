@@ -2,8 +2,11 @@ package entities;
 
 
 import javax.persistence.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 
 @Entity
@@ -55,10 +58,19 @@ public class Product {
         this.name = name;
     }
 
-
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "product_image", nullable = false)
     public byte[] getProductImage() {
         return productImage;
+    }
+
+    /**
+     * This method has to be used when you want to display the image in thymeleaf
+     * @return Base64 encoded image
+     */
+    public String imageString(){
+        return Base64.getEncoder().encodeToString(productImage);
     }
 
     public void setProductImage(byte[] productImage) {

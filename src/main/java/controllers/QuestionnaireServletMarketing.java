@@ -1,5 +1,6 @@
 package controllers;
 
+import Utils.QuestionnaireSection;
 import entities.*;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -10,7 +11,12 @@ import services.QuestionnaireService;
 import services.UserQuestionnaire;
 import services.UserService;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
+import javax.inject.Inject;
+import javax.naming.Context;
+import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,13 +31,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@WebServlet(name = "QuestionnaireServlet", value = "/QuestionnaireServlet")
-public class QuestionnaireServlet extends HttpServlet {
+
+/*
+ * First page of the questionnaire: The marketing section is loaded and the user can starts filling the questionnaire
+ */
+@WebServlet(name = "QuestionnaireServletMarketing", value = "/QuestionnaireServletMarketing")
+public class QuestionnaireServletMarketing extends HttpServlet {
 
     private final TemplateEngine templateEngine = new TemplateEngine();
-    private String path;
+    private final String path = "QuestionnairePage";
 
-    @EJB(beanName = "UserQuestionnaire")
+    @Inject
     UserQuestionnaire userQuestionnaire;
 
     @Override
@@ -47,6 +57,7 @@ public class QuestionnaireServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         User user = (User) request.getSession().getAttribute("user");
+
 
         List<Answer> userAnswers = new ArrayList<>();
         Answer answer;
@@ -65,52 +76,31 @@ public class QuestionnaireServlet extends HttpServlet {
             userAnswers.add(answer);
         }
 
-        // case in which I'm arriving from the marketing section
-        if (userQuestionnaire.getCurrentUserSection() == 0) {
-            userQuestionnaire.setUserMarketingAnswers(userAnswers);
-            userQuestionnaire.setCurrentUserSection(1);
-            renderStatisticalPage(request, response);
-        } else {
-            userQuestionnaire.setUserStatisticalAnswers(userAnswers);
-            if (request.getParameter("turnBack") != null) {
-                renderMarketingPage(request, response);
-            } else {
-                try {
-                    userQuestionnaire.validateUserQuestionnaire();
-                } catch (SystemException | NotSupportedException e) {
-                    e.printStackTrace();
-                }
-                response.sendRedirect(request.getContextPath() + "/UserHomePage");
-            }
-        }
+        userQuestionnaire.setUserMarketingAnswers(userAnswers);
+        userQuestionnaire.setCurrentUserSection(QuestionnaireSection.STATISTICAL);
+
+        response.sendRedirect(request.getContextPath() + "/QuestionnaireServletStatistical");
     }
 
-    public void renderStatisticalPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
-        path = "StatisticalSection";
 
-        try{
-            //case in which it's the first time the user visits the statistical section
-            if (userQuestionnaire.getUserStatisticalAnswers().isEmpty()) {
-                ctx.setVariable("questions", userQuestionnaire.getCurrentSectionQuestions());
-            } else { //the user is reviewing his/her answers
-                ctx.setVariable("answers", userQuestionnaire.getUserStatisticalAnswers());
-            }
-            ctx.setVariable("product", userQuestionnaire.getProduct());
-        }catch (Throwable e){
-            ctx.setVariable("errorMsg", "Ops, something went wrong!");
+    /**
+     * If userCurrentSection is equal to Marketing, it means that it's the first time the user visits the questionnaire;
+     * Otherwise, if the user current section is equal to Statistical, it means that the user is coming from the
+     * statistical section, thus s/he has already answered the mandatory marketing questions.
+     */
+    public void renderMarketingPage(HttpServletRequest request, HttpServletResponse response, String errorMsg) throws IOException {
+        final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
+
+        if(errorMsg != null){
+            ctx.setVariable("errorMsg", errorMsg);
+            templateEngine.process(path, ctx, response.getWriter());
+            return;
         }
-        templateEngine.process(path, ctx, response.getWriter());
-    }
-
-    public void renderMarketingPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
-        path = "QuestionnairePage";
 
         try {
-            if (userQuestionnaire.getCurrentUserSection() == 1) {
+            if (userQuestionnaire.getCurrentUserSection() == QuestionnaireSection.STATISTICAL) {
                 ctx.setVariable("answers", userQuestionnaire.getUserMarketingAnswers());
-                userQuestionnaire.setCurrentUserSection(0);
+                userQuestionnaire.setCurrentUserSection(QuestionnaireSection.MARKETING);
             } else {
                 ctx.setVariable("questions", userQuestionnaire.getCurrentSectionQuestions());
             }
@@ -122,7 +112,14 @@ public class QuestionnaireServlet extends HttpServlet {
         templateEngine.process(path, ctx, response.getWriter());
     }
 
+
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        renderMarketingPage(request, response);
+        User currentUser = (User) request.getSession().getAttribute("user");
+        if (userQuestionnaire.alreadyFulfilled(currentUser)) {
+            renderMarketingPage(request, response, "You have already fulfilled the questionnaire for this product!");
+        } else {
+            renderMarketingPage(request, response, null);
+        }
     }
 }

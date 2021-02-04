@@ -29,7 +29,7 @@
         Product of today:
         <p th:text="${product.getName()}"></p>
         <br />
-        <img class="img-thumbnail text-center" th:src="*{'data:image/png;base64,'+ product.getProductImage()}"
+        <img class="img-thumbnail text-center" th:src="*{'data:image/png;base64,'+ product.imageString()}"
              alt="ProductImage" th:alt="'Image of: '+ ${product.getName()}">
         <a href="AddQuestions"> Add questionnaire questions </a>
     </div>
