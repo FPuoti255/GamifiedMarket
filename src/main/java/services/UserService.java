@@ -1,16 +1,26 @@
 package services;
 
+import Utils.UserAction;
 import entities.User;
+import entities.Userlog;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Stateless
 public class UserService {
     @PersistenceContext(unitName = "gamified_market")
     EntityManager em;
+
+    @EJB(beanName = "Logger")
+    Logger logger;
 
     public UserService() {
     }
@@ -27,7 +37,15 @@ public class UserService {
             return  null;
         }
 
-        return (userList.size() != 1) ? null : userList.get(0);
+        if(userList.size() == 1){
+            logger.logAction(
+                    userList.get(0).getIdUser(),
+                    UserAction.LOGIN,
+                    null
+            );
+            return userList.get(0);
+        }
+        return null;
     }
 
     public User registerNewUser(String usrname, String email, String psw){
@@ -46,5 +64,7 @@ public class UserService {
         }
         return newUsr;
     }
+
+
 
 }

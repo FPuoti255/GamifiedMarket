@@ -18,6 +18,13 @@ public class Userlog {
     public Userlog() {
     }
 
+    public Userlog(int idUser, Timestamp datetime, String action, Integer idProduct) {
+        this.idUser = idUser;
+        this.datetime = datetime;
+        this.action = action;
+        this.idProduct = idProduct;
+    }
+
     @Id
     @Column(name = "id_user", nullable = false)
     public int getIdUser() {
