@@ -1,6 +1,7 @@
 package services;
 
 import Utils.QuestionnaireSection;
+import Utils.UserAction;
 import entities.*;
 
 import javax.annotation.PostConstruct;
@@ -28,14 +29,17 @@ import javax.transaction.UserTransaction;
 @TransactionManagement(TransactionManagementType.BEAN)
 public class UserQuestionnaire implements Serializable {
     /*
-    Usually, an EntityManager lives and dies within a JTA transaction.
-    Once the transaction is finished, all persistent objects are detached from the EntityManager and are no longer managed.
-    Any local caching the EntityManager instance had done is lost.
-    Long-living EntityManagers, that live beyond the scope of a JTA transaction, are called an Extended Persistence Context.
-    When you specify that an injected EntityManager is an extended persistence context, all object instances remain managed.
+        Usually, an EntityManager lives and dies within a JTA transaction.
+        Once the transaction is finished, all persistent objects are detached from the EntityManager and are no longer managed.
+        Any local caching the EntityManager instance had done is lost.
+        Long-living EntityManagers, that live beyond the scope of a JTA transaction, are called an Extended Persistence Context.
+        When you specify that an injected EntityManager is an extended persistence context, all object instances remain managed.
      */
     @PersistenceContext(unitName = "gamified_market", type = PersistenceContextType.EXTENDED)
     EntityManager em;
+
+    @EJB(beanName = "Logger")
+    Logger logger;
 
     @Resource
     private UserTransaction utx;
@@ -70,11 +74,11 @@ public class UserQuestionnaire implements Serializable {
                 .setParameter(3, asw.getIdQuestion())
                 .setParameter(4, asw.getAnswerText()).getSingleResult();
         if (returned == -1) {
-            throw new Exception();
+            throw new IllegalArgumentException(); // swears alert
         }
     }
 
-    public void validateUserQuestionnaire() throws SystemException, NotSupportedException {
+    public int validateUserQuestionnaire() throws SystemException, NotSupportedException {
         utx.begin();
         try {
             for (Answer asw : this.userMarketingAnswers) {
@@ -87,9 +91,25 @@ public class UserQuestionnaire implements Serializable {
 
             }
             utx.commit();
-        } catch (Exception e) {
+            // todo testami un botto (come jacoco)
+            logger.logAction(
+                    this.userMarketingAnswers.get(0).getIdUser(),
+                    UserAction.SUBMITTED,
+                    product.getIdProduct()
+            );
+        } catch (IllegalArgumentException e) {
             utx.rollback();
+            logger.logAction(
+                    this.userMarketingAnswers.get(0).getIdUser(),
+                    UserAction.BANNED,
+                    null
+            );
+            return -1;
+        } catch (Exception x){
+            utx.rollback();
+            return -1;
         }
+        return 1;
     }
 
     public boolean alreadyFulfilled (User currentUser){

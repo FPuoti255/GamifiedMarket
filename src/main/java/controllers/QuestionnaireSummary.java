@@ -20,7 +20,7 @@ import java.io.IOException;
 public class QuestionnaireSummary extends HttpServlet {
 
     private final TemplateEngine templateEngine = new TemplateEngine();
-    private final String path = "QuestionnaireSummary";
+    private final String path = "QuestionnaireSummaryPage";
 
     @EJB(beanName = "QuestionnaireService")
     QuestionnaireService questionnaireService;
@@ -38,6 +38,13 @@ public class QuestionnaireSummary extends HttpServlet {
         templateEngine.setTemplateResolver(templateResolver);
     }
 
+    /**
+     * todo: do stuff here (user history of questionnaire)
+     * @param req
+     * @param resp
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final WebContext ctx = new WebContext(req, resp, getServletContext(), req.getLocale());

@@ -89,7 +89,6 @@ public class QuestionnaireServletStatistical extends HttpServlet {
             }
             response.sendRedirect(request.getContextPath() + "/UserHomePage");
         }
-
     }
 
     /**
