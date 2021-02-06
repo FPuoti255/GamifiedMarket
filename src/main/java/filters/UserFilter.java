@@ -15,10 +15,11 @@ public class UserFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
         User user = ((User) request.getSession().getAttribute("user"));
-        if (user.isAdmin()) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You are not authorized to access this page, please go back");
+        if (user.isAdmin() || ! user.isAuthorized()) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You are not authorized to access this page");
             return;
         }
+
         chain.doFilter(req, resp);
     }
 }

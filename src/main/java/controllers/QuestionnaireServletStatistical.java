@@ -1,6 +1,7 @@
 package controllers;
 
 import Utils.QuestionnaireSection;
+import Utils.UserAction;
 import entities.Answer;
 import entities.Questionnaire;
 import entities.User;
@@ -8,6 +9,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+import services.Logger;
 import services.UserQuestionnaire;
 
 import javax.ejb.EJB;
@@ -30,6 +32,8 @@ public class QuestionnaireServletStatistical extends HttpServlet {
     @Inject
     UserQuestionnaire userQuestionnaire;
 
+
+
     @Override
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
@@ -43,7 +47,6 @@ public class QuestionnaireServletStatistical extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-
         if (userQuestionnaire.getCurrentUserSection() != QuestionnaireSection.STATISTICAL) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
@@ -54,10 +57,17 @@ public class QuestionnaireServletStatistical extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        User user = (User) request.getSession().getAttribute("user");
-
         if (userQuestionnaire.getCurrentUserSection() != QuestionnaireSection.STATISTICAL) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        }
+
+        User user = (User) request.getSession().getAttribute("user");
+        String msg = "";
+
+        if (request.getParameter("cancelled") != null){
+            userQuestionnaire.cancelQuestionnaire(user);
+            renderEndQuestionnairePage(request,response, msg = "Your questionnaire has been successfully cancelled.");
+            return;
         }
 
         List<Answer> userAnswers = new ArrayList<>();
@@ -74,6 +84,7 @@ public class QuestionnaireServletStatistical extends HttpServlet {
                 userAnswers.add(answer);
             }
         }
+
         if (!userAnswers.isEmpty()) {
             userQuestionnaire.setUserStatisticalAnswers(userAnswers);
         }
@@ -82,13 +93,25 @@ public class QuestionnaireServletStatistical extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/QuestionnaireServletMarketing");
         } else {
             try {
-                userQuestionnaire.validateUserQuestionnaire();
-                userQuestionnaire.invalidateBean();
-            } catch (SystemException | NotSupportedException e) {
-                e.printStackTrace();
+                UserAction act = userQuestionnaire.validateUserQuestionnaire();
+                if(act == UserAction.BANNED){
+                    request.getSession().invalidate();
+                    msg = "Ops, we detected swears in your answers. From now on, you're banned from our website.";
+                }else  msg = "Thank you for having submitted the questionnaire!" ;
+
+                renderEndQuestionnairePage(request, response, msg);
+            }catch( SystemException | NotSupportedException e2){
+                e2.printStackTrace();
             }
-            response.sendRedirect(request.getContextPath() + "/UserHomePage");
         }
+    }
+
+
+    public void renderEndQuestionnairePage(HttpServletRequest request, HttpServletResponse response, String msg) throws IOException {
+        final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
+        ctx.setVariable("msg", msg);
+        String finPage = "EndQuestionnairePage";
+        templateEngine.process(finPage, ctx, response.getWriter());
     }
 
     /**

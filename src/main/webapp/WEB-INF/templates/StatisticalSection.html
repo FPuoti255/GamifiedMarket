@@ -26,21 +26,32 @@
         <form id="marketingSection" action="QuestionnaireServletStatistical" method="post">
             <ul th:if="${answers == null}" th:each="qstn : ${questions}">
                 <li>
-                    <label th:for="${qstn.getIdQuestion()}" th:text="${qstn.getQuestionByIdQuestion().getQuestionText()}">question text</label>
+                    <label th:for="${qstn.getIdQuestion()}"
+                           th:text="${qstn.getQuestionByIdQuestion().getQuestionText()}">question text</label>
                     <textarea class="form-control" placeholder="Leave your answer here"
-                              th:id="${qstn.getIdQuestion()}" th:name="${qstn.getIdQuestion()}" required></textarea>
+                              th:id="${qstn.getIdQuestion()}" th:name="${qstn.getIdQuestion()}"></textarea>
                 </li>
             </ul>
             <ul th:unless="${answers == null}" th:each="asw : ${answers}">
                 <li>
-                    <label th:for="${asw.getIdQuestion()}" th:text="${asw.getQuestionByIdQuestion().getQuestionText()}">question text</label>
+                    <label th:for="${asw.getIdQuestion()}" th:text="${asw.getQuestionByIdQuestion().getQuestionText()}">question
+                        text</label>
                     <textarea class="form-control" placeholder="Leave your answer here" th:text="${asw.getAnswerText()}"
-                              th:id="${asw.getIdQuestion()}" th:name="${asw.getIdQuestion()}" required></textarea>
+                              th:id="${asw.getIdQuestion()}" th:name="${asw.getIdQuestion()}"></textarea>
                 </li>
             </ul>
-            <input id="check" class="form-check-input" type="checkbox" name="turnBack">
-            <label for="check"> Do you want to review your marketing section answers? Check here </label><br>
-            <button type="submit" class="btn btn-primary" value="Submit">Submit</button>
+            <div class="btn-group-vertical">
+                <span>
+                    <input id="check" class="form-check-input" type="checkbox" name="turnBack">
+                    <label for="check"> Do you want to review your marketing section answers? Check here </label><br>
+                </span>
+                <span>
+                    <input id="del" class="form-check-input" type="checkbox" name="cancelled">
+                    <label for="del"> If you want to cancel your questionnaire, please check here. Otherwise, your responses
+                        would be submitted</label><br>
+                </span>
+            </div>
+            <button type="submit" class="btn btn-primary my-5" value="Submit">Submit</button>
         </form>
     </div>
 </div>

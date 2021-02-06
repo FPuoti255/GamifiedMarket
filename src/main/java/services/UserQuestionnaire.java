@@ -8,14 +8,14 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.*;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
+import javax.transaction.*;
+import javax.transaction.RollbackException;
 
 /**
  * Http Session is a perfect storage place where all request from same web client have access
@@ -23,6 +23,8 @@ import javax.transaction.UserTransaction;
  * from where it can be referred again by all requests for same session.
  * Therefore, if in the session there's no attribute userQuestionnaire, it means that it's the first time the user is fulfilling
  * the product's questionnaire
+ * -> @Stateful EJBs can be also denoted with @SessionScoped annotation.
+ * Then the active HTTP session becomes the "EJB client" and maintains the instances.
  */
 @SessionScoped
 @Stateful
@@ -52,12 +54,17 @@ public class UserQuestionnaire implements Serializable {
     final List<Answer> userMarketingAnswers = new ArrayList<>();
     final List<Answer> userStatisticalAnswers = new ArrayList<>();
 
+    boolean invalidated;
+
     @EJB(name = "ProductService")
     ProductService pdrService;
 
+    @EJB(beanName = "UserService")
+    UserService usrService;
+
+
     public UserQuestionnaire() {
     }
-
 
 
     @PostConstruct
@@ -65,54 +72,82 @@ public class UserQuestionnaire implements Serializable {
         currentUserSection = QuestionnaireSection.MARKETING;
         product = pdrService.getProductOfTheDay();
         questions = (List<Questionnaire>) pdrService.getProductOfTheDay().getQuestionnairesByIdProduct();
+        invalidated = false;
     }
 
-    public void insertSingleAnswer(Answer asw) throws Exception {
+    public void insertSingleAnswer(Answer asw) throws IllegalArgumentException {
         int returned = (int) em.createNativeQuery("select insert_answer(?,?,?,?)")
                 .setParameter(1, asw.getIdProduct())
                 .setParameter(2, asw.getIdUser())
                 .setParameter(3, asw.getIdQuestion())
                 .setParameter(4, asw.getAnswerText()).getSingleResult();
         if (returned == -1) {
-            throw new IllegalArgumentException(); // swears alert
+            throw new IllegalArgumentException(" Your responses contains swears! You are no longer authorized on this site"); // swears alert
         }
     }
 
-    public int validateUserQuestionnaire() throws SystemException, NotSupportedException {
+
+    public UserAction validateUserQuestionnaire() throws IllegalArgumentException, SystemException, NotSupportedException {
+
         utx.begin();
+        UserAction act = null;
+
         try {
+
             for (Answer asw : this.userMarketingAnswers) {
                 insertSingleAnswer(asw);
             }
-            if(! this.userStatisticalAnswers.isEmpty()){
+
+            if (!this.userStatisticalAnswers.isEmpty()) {
                 for (Answer asw : this.userStatisticalAnswers) {
                     insertSingleAnswer(asw);
                 }
 
             }
+
             utx.commit();
-            // todo testami un botto (come jacoco)
+            act = UserAction.SUBMITTED;
             logger.logAction(
                     this.userMarketingAnswers.get(0).getIdUser(),
-                    UserAction.SUBMITTED,
+                    act,
                     product.getIdProduct()
             );
         } catch (IllegalArgumentException e) {
             utx.rollback();
+
+            int idUSer =  this.userMarketingAnswers.get(0).getIdUser();
+            act = UserAction.BANNED;
+            usrService.banUser(idUSer);
             logger.logAction(
-                    this.userMarketingAnswers.get(0).getIdUser(),
-                    UserAction.BANNED,
+                    idUSer,
+                    act,
                     null
             );
-            return -1;
-        } catch (Exception x){
-            utx.rollback();
-            return -1;
+        }catch (RollbackException | HeuristicMixedException | HeuristicRollbackException | SystemException e2){
+            e2.printStackTrace();
+        }finally {
+            invalidateBean();
         }
-        return 1;
+
+        return act;
     }
 
-    public boolean alreadyFulfilled (User currentUser){
+    public void cancelQuestionnaire(User user) {
+        logger.logAction(
+                user.getIdUser(),
+                UserAction.CANCELLED,
+                this.product.getIdProduct()
+        );
+        invalidateBean();
+    }
+
+    private void invalidateBean() {
+        userMarketingAnswers.clear();
+        userStatisticalAnswers.clear();
+        invalidated = true;
+    }
+
+    public boolean alreadyFulfilled(User currentUser) {
         UserQuestionnairePointsPK pk = new UserQuestionnairePointsPK(product.getIdProduct(), currentUser.getIdUser());
         UserQuestionnairePoints uqp = em.find(UserQuestionnairePoints.class, pk);
         return uqp != null;
@@ -120,6 +155,7 @@ public class UserQuestionnaire implements Serializable {
 
     @Remove
     public void remove() {
+        em.close();
     }
 
     public List<Questionnaire> getCurrentSectionQuestions() {
@@ -135,6 +171,10 @@ public class UserQuestionnaire implements Serializable {
 
     public void setCurrentUserSection(QuestionnaireSection currentUserSection) {
         this.currentUserSection = currentUserSection;
+    }
+
+    public boolean isInvalidated() {
+        return invalidated;
     }
 
     public Product getProduct() {
@@ -169,8 +209,4 @@ public class UserQuestionnaire implements Serializable {
         this.userStatisticalAnswers.addAll(userStatisticalAnswers);
     }
 
-    public void invalidateBean() {
-        userMarketingAnswers.clear();
-        userStatisticalAnswers.clear();
-    }
 }

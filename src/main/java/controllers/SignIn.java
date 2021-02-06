@@ -54,6 +54,9 @@ public class SignIn extends HttpServlet {
             ctx.setVariable("errorMsg", "Invalid Credentials");
             templateEngine.process(path, ctx, response.getWriter());
             return;
+        }else if (! user.isAuthorized()){
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
         request.getSession().setAttribute("user", user);
         String servlet = user.isAdmin() ? "AdminHomePage" : "UserHomePage";

@@ -66,5 +66,8 @@ public class UserService {
     }
 
 
-
+    public void banUser(int idUSer) {
+        em.find(User.class, idUSer).setAuthorized(false);
+        em.flush();
+    }
 }

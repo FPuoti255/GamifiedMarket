@@ -33,17 +33,24 @@
         <div class="row mt-5">
             <a href="#" th:href="@{/QuestionnaireServletMarketing}" >Click here to fill the product's questionnaire</a>
         </div>
-        <div class="row mt-5" th:if="${user.isAuthorized()}" >
+        <div class="row my-5" th:if="${user.isAuthorized()}" >
             <a href="#" th:href="@{/QuestionnaireSummary}">Questionnaires history</a>
         </div>
     </div>
-    <div class="col-7">
-        <h2 class="text-success">All reviews from other users</h2>
-        <ul class="mt-5" th:each="rev : ${reviews}">
-            <li>
-                <p th:text="${rev.getIdUser()} + ': ' + ${rev.getReviewText()}">IdUser: review text</p>
-            </li>
-        </ul>
+    <div class="col-7 ml-5">
+        <h2 class="text-success">All reviews</h2>
+            <h3>From other users</h3>
+            <ul class="mt-5" th:each="rev : ${reviews}">
+                <li th:if = "${rev.getIdUser() != user.getIdUser()}" >
+                    <p th:text="'IdUser ' + ${rev.getIdUser()} + ': ' + ${rev.getReviewText()}">IdUser: review text</p>
+                </li>
+            </ul>
+            <h3>Your reviews</h3>
+            <ul class="mt-5" th:each="rev : ${reviews}">
+                <li th:unless = "${rev.getIdUser() != user.getIdUser()}">
+                    <p  th:text="${rev.getReviewText()}">IdUser: review text</p>
+                </li>
+            </ul>
     </div>
 </div>
 </body>

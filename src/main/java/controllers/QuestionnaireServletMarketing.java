@@ -119,6 +119,7 @@ public class QuestionnaireServletMarketing extends HttpServlet {
         if (userQuestionnaire.alreadyFulfilled(currentUser)) {
             renderMarketingPage(request, response, "You have already fulfilled the questionnaire for this product!");
         } else {
+            if(userQuestionnaire.isInvalidated()) userQuestionnaire.initialize();
             renderMarketingPage(request, response, null);
         }
     }
