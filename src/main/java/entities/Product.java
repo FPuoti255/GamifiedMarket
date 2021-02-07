@@ -2,8 +2,6 @@ package entities;
 
 
 import javax.persistence.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.Base64;
@@ -26,7 +24,7 @@ public class Product {
     private Collection<Answer> answersByIdProduct;
     private Collection<Questionnaire> questionnairesByIdProduct;
     private Collection<Review> reviewsByIdProduct;
-    private Collection<Userlog> userlogsByIdProduct;
+    private Collection<QuestionnaireLog> questionnaireLogsByIdProduct;
 
 
     public Product() {
@@ -139,11 +137,11 @@ public class Product {
     }
 
     @OneToMany(mappedBy = "productByIdProduct")
-    public Collection<Userlog> getUserlogsByIdProduct() {
-        return userlogsByIdProduct;
+    public Collection<QuestionnaireLog> getQuestionnaireLogsByIdProduct() {
+        return questionnaireLogsByIdProduct;
     }
 
-    public void setUserlogsByIdProduct(Collection<Userlog> userlogsByIdProduct) {
-        this.userlogsByIdProduct = userlogsByIdProduct;
+    public void setQuestionnaireLogsByIdProduct(Collection<QuestionnaireLog> questionnaireLogsByIdProduct) {
+        this.questionnaireLogsByIdProduct = questionnaireLogsByIdProduct;
     }
 }

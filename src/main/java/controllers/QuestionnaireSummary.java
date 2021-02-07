@@ -8,7 +8,6 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import services.ProductService;
-import services.QuestionnaireService;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
@@ -29,9 +28,6 @@ public class QuestionnaireSummary extends HttpServlet {
     private final TemplateEngine templateEngine = new TemplateEngine();
     private final String path = "QuestionnaireSummaryPage.html";
 
-    @EJB(beanName = "QuestionnaireService")
-    QuestionnaireService questionnaireService;
-
     @EJB(beanName = "ProductService")
     ProductService productService;
 
@@ -45,12 +41,7 @@ public class QuestionnaireSummary extends HttpServlet {
         templateEngine.setTemplateResolver(templateResolver);
     }
 
-    /**
-     * @param req
-     * @param resp
-     * @throws ServletException
-     * @throws IOException
-     */
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User currentUser = (User) req.getSession().getAttribute("user");

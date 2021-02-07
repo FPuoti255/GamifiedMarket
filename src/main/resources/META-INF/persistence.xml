@@ -15,6 +15,7 @@
         <class>entities.Swears</class>
         <class>entities.User</class>
         <class>entities.Userlog</class>
+        <class>entities.QuestionnaireLog</class>
         <properties>
             <property name="eclipselink.logging.level" value="FINE" />
         </properties>

@@ -19,6 +19,7 @@ public class User {
     private Collection<Answer> answersByIdUser;
     private Collection<Review> reviewsByIdUser;
     private Collection<Userlog> userlogsByIdUser;
+    private Collection<QuestionnaireLog> questionnaireLogsByIdUser;
 
     public User() {
     }
@@ -160,5 +161,14 @@ public class User {
 
     public void setUserlogsByIdUser(Collection<Userlog> userlogsByIdUser) {
         this.userlogsByIdUser = userlogsByIdUser;
+    }
+
+    @OneToMany(mappedBy = "userByIdUser")
+    public Collection<QuestionnaireLog> getQuestionnaireLogsByIdUser() {
+        return questionnaireLogsByIdUser;
+    }
+
+    public void setQuestionnaireLogsByIdUser(Collection<QuestionnaireLog> questionnaireLogsByIdUser) {
+        this.questionnaireLogsByIdUser = questionnaireLogsByIdUser;
     }
 }
