@@ -1,5 +1,6 @@
 package controllers;
 
+import Utils.UserAction;
 import entities.Product;
 import entities.Review;
 import entities.User;
@@ -7,6 +8,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+import services.Logger;
 import services.ProductService;
 
 import javax.ejb.EJB;
@@ -29,6 +31,9 @@ public class UserHomePage extends HttpServlet {
 
     @EJB(beanName = "ProductService")
     ProductService pdrService;
+
+    @EJB(beanName = "Logger")
+    Logger logger;
 
     @Override
     public void init() throws ServletException {
@@ -72,9 +77,10 @@ public class UserHomePage extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User sessionUser = (User) request.getSession().getAttribute("user");
+        Product pdr = pdrService.getProductOfTheDay();
 
         Review check = pdrService.addReview(
-                pdrService.getProductOfTheDay().getIdProduct(),
+                pdr.getIdProduct(),
                 sessionUser.getIdUser(),
                 request.getParameter("userRev"),
                 Timestamp.valueOf(LocalDateTime.now())
@@ -83,6 +89,11 @@ public class UserHomePage extends HttpServlet {
         if (check == null) {
             renderPage(request, response, "Ops, something went wrong");
         } else {
+            logger.logAction(
+                    sessionUser.getIdUser(),
+                    UserAction.LEAVE_REVIEW,
+                    pdr.getIdProduct()
+            );
             renderPage(request, response, null);
         }
     }
