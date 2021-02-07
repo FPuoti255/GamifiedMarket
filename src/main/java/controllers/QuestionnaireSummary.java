@@ -1,5 +1,8 @@
 package controllers;
 
+import entities.Answer;
+import entities.Product;
+import entities.User;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -15,12 +18,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "QuestionnaireSummary", value = "/QuestionnaireSummary")
 public class QuestionnaireSummary extends HttpServlet {
 
     private final TemplateEngine templateEngine = new TemplateEngine();
-    private final String path = "QuestionnaireSummaryPage";
+    private final String path = "QuestionnaireSummaryPage.html";
 
     @EJB(beanName = "QuestionnaireService")
     QuestionnaireService questionnaireService;
@@ -39,7 +46,6 @@ public class QuestionnaireSummary extends HttpServlet {
     }
 
     /**
-     * todo: do stuff here (user history of questionnaire)
      * @param req
      * @param resp
      * @throws ServletException
@@ -47,10 +53,24 @@ public class QuestionnaireSummary extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User currentUser = (User) req.getSession().getAttribute("user");
+
+        List<Answer> answers = (List<Answer>) currentUser.getAnswersByIdUser();
+        List<Product> products = answers.stream().map(Answer::getIdProduct)
+                .distinct().map( x -> productService.getProductById(x))
+                .collect(Collectors.toList());
+
+        Map<Product, List<Answer>> userQuestionnaires = new HashMap<>();
+
+        for(Product pdr : products){
+            userQuestionnaires.put(
+                    pdr,
+                    answers.stream().filter(x -> x.getIdProduct() == pdr.getIdProduct()).collect(Collectors.toList())
+            );
+        }
+
         final WebContext ctx = new WebContext(req, resp, getServletContext(), req.getLocale());
-
-        ctx.setVariable("answers", questionnaireService.retrieveAllQuestionnaires());
-
+        ctx.setVariable("summary", userQuestionnaires);
         templateEngine.process(path, ctx, resp.getWriter());
     }
 }

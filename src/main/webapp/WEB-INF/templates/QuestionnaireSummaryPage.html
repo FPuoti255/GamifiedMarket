@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      lang="en" th:lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <title>Product's compiled questionnaires</title>
+</head>
+<body>
+<div class="row my-5 mx-2 justify-content-center">
+    <h2 class="text-success">Here you can see the questionnaire you've fulfilled</h2>
+    <ul th:each=" el: ${summary}">
+        <div class="row mt-5">
+            <div class="col-5">
+                <p class="text-primary" th:text="${el.getKey().getName()}"></p>
+                <img class="img-thumbnail" th:src="*{'data:image/png;base64,'+ el.getKey().imageString()}"
+                     alt="TestImage" th:alt="'Image of: '+ ${el.getKey().getName()}">
+            </div>
+            <div class="col-7">
+                <ul th:each="asw : ${el.getValue()}">
+                    <div class="row">
+                        <div class="col-5">
+                            <p th:text="'Question : ' + ${asw.getQuestionByIdQuestion().getQuestionText()}">QuestionText</p>
+                        </div>
+                        <div class="col-5">
+                            <p th:text="${asw.getAnswerText()}">AnswerText</p>
+                        </div>
+
+                    </div>
+                </ul>
+            </div>
+        </div>
+
+    </ul>
+</div>
+</body>
+</html>
