@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "userquestionnairepoints")
 @IdClass(UserQuestionnairePointsPK.class)
+@NamedQuery(name = "UserQuestionnairePoints", query = "SELECT r FROM UserQuestionnairePoints r WHERE r.idProduct = ?1 ORDER BY r.userPoints DESC")
 public class UserQuestionnairePoints {
     @Id
     @Column(name = "id_product", nullable = false)
@@ -33,6 +34,5 @@ public class UserQuestionnairePoints {
     public int getUserPoints(){
         return userPoints;
     }
-
 
 }

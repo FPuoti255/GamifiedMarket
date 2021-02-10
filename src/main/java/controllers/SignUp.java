@@ -61,8 +61,7 @@ public class SignUp extends HttpServlet {
         }
 
         request.getSession().setAttribute("user", newUser);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/UserHomePage");
-        dispatcher.forward(request, response);
+        response.sendRedirect("index.html");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

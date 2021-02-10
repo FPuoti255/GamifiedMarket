@@ -8,11 +8,12 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.*;
 import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.transaction.*;
 import javax.transaction.RollbackException;
@@ -86,6 +87,21 @@ public class UserQuestionnaire implements Serializable {
         }
     }
 
+    public Map<User, Integer> getLeaderBoard(){
+        Map<User, Integer> UserPoints = new HashMap<>();
+
+        List<UserQuestionnairePoints> myData = (List<UserQuestionnairePoints>) em.createNamedQuery("UserQuestionnairePoints")
+                .setParameter(
+                        1,
+                        pdrService.getProductOfTheDay().getIdProduct())
+                .getResultList();
+
+        for(UserQuestionnairePoints i : myData){
+            UserPoints.put(em.find( User.class, i.getIdUser()), i.getUserPoints());
+        }
+
+        return UserPoints;
+    }
 
     public UserAction validateUserQuestionnaire() throws IllegalArgumentException, SystemException, NotSupportedException {
 
