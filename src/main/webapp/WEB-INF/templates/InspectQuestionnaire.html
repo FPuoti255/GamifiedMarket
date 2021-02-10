@@ -11,22 +11,44 @@
     <title>ReviewQuestionnaires</title>
 </head>
 <body>
-    <a th:href="@{/ReviewQuestionnaires}"> Back to questionnaires list </a>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Gamified market</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="ReviewQuestionnaires">Back to questionnaires list</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="AdminHomePage">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="LogOut">Log out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <!-- main div with product information -->
-    <div class="mt-5 text-center">
+    <div class="mx-5 my-5">
         <label th:text="${product.getName()}"></label>
         <img class="img-thumbnail text-center" th:src="*{'data:image/png;base64,'+ product.imageString()}"
              alt="ProductImage" th:alt="'Image of: '+ ${product.getName()}">
     </div>
 
     <!-- general information about the questionnaire-->
-    <div class="mt-5 text-center">
+    <div class="mx-5 my-5">
         Users that completed the questionnaire: <p th:text="${numSubmitted}"></p> <br />
         Users that cancelled the questionnaire: <p th:text="${numCancelled}"></p> <br />
     </div>
 
     <!-- list of questions -->
-    <div class="mt-5 text-center">
+    <div class="mx-5 my-5">
         <ul th:each="question : ${questions}">
             <li>
                 <label th:text="${question.getPoints() > 1 ? 'Mandatory' : 'Facultative'}"></label> <br />
@@ -35,7 +57,7 @@
 
                 <!-- sublist of answers -->
                 <!-- the page displays the answers grouped by the question -->
-                <div class="mt-5 text-center">
+                <div class="m-5">
                     <ul th:each="answer : ${answers}">
                         <li th:if="${answer.getIdQuestion() == question.getIdQuestion() && answer.getIdProduct() == product.getIdProduct()}">
                             <label th:text="${answer.getUserByIdUser().getUsername()}"></label> :
@@ -49,7 +71,7 @@
     </div>
 
     <!-- Cancelling questionnaire -->
-    <div class="mt-5 text-center">
+    <div class="mx-5 my-5">
         <a th:href="@{/RemoveQuestionnaire(idProduct=${product.getIdProduct()})}" type="submit"> Remove this product and all associated data? </a>
     </div>
 

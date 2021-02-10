@@ -11,8 +11,28 @@
     <title>ReviewQuestionnaires</title>
 </head>
 <body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Gamified market</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="AdminHomePage">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="LogOut">Log out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <!-- main panel with products list-->
-    <div>
+    <div class="my-5 mx-5">
         Select the product you want to inspect:
         <div th:if="${products.size() > 0}">
             <ul th:each="product : ${products}">
