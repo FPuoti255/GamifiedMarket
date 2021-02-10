@@ -37,7 +37,7 @@
         </div>
     </nav>
 
-    <div th:unless="${board.isEmpty()}">
+    <div class="m-5" th:unless="${board.isEmpty()}">
         <ol th:each="userpoints : ${board}">
             <li class="m-5 text-center">
                 <span>
@@ -48,7 +48,7 @@
         </ol>
     </div>
     <div th:if="${board.isEmpty()}">
-        <h2 class="text-success">No user took the questionnaire so far! Be the first!</h2>
+        <h2 class="text-center text-success">No user took the questionnaire so far! Be the first!</h2>
     </div>
 
 </body>

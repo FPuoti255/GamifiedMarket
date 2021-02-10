@@ -39,43 +39,41 @@
 </nav>
 
 <div th:if="${product != null}">
-
-<div class="row mt-5 mx-2 justify-content-center">
-    <div class="col-4">
-        <div class="row">
-            <h2 class="text-success">Product of the day</h2>
-            <p class="text-success" th:text="${product.getName()}"></p>
-            <img class="img-thumbnail" th:src="*{'data:image/png;base64,'+ product.imageString()}"
-                 alt="TestImage" th:alt="'Image of: '+ ${product.getName()}">
+    <div class="row mt-5 mx-2 justify-content-center">
+        <div class="col-4">
+            <div class="row">
+                <h2 class="text-success">Product of the day</h2>
+                <p class="text-success" th:text="${product.getName()}"></p>
+                <img class="img-thumbnail" th:src="*{'data:image/png;base64,'+ product.imageString()}"
+                     alt="TestImage" th:alt="'Image of: '+ ${product.getName()}">
+            </div>
+            <div class="row mt-5">
+                <form action="UserHomePage" method="post">
+                    <textarea id="userRev" name="userRev" cols="50" required
+                              placeholder="If you want to review this product, please,insert your comment here"></textarea>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <div class="row mt-5">
+                <a href="#" th:href="@{/QuestionnaireServletMarketing}" >Click here to fill the product's questionnaire</a>
+            </div>
         </div>
-        <div class="row mt-5">
-            <form action="UserHomePage" method="post">
-                <textarea id="userRev" name="userRev" cols="50" required
-                          placeholder="If you want to review this product, please,insert your comment here"></textarea>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-        </div>
-        <div class="row mt-5">
-            <a href="#" th:href="@{/QuestionnaireServletMarketing}" >Click here to fill the product's questionnaire</a>
+        <div class="col-7 ml-5">
+            <h2 class="text-success">All reviews</h2>
+                <h3>From other users</h3>
+                <ul class="mt-5" th:each="rev : ${reviews}">
+                    <li th:if = "${rev.getIdUser() != user.getIdUser()}" >
+                        <p th:text="'IdUser ' + ${rev.getIdUser()} + ': ' + ${rev.getReviewText()}">IdUser: review text</p>
+                    </li>
+                </ul>
+                <h3>Your reviews</h3>
+                <ul class="mt-5" th:each="rev : ${reviews}">
+                    <li th:unless = "${rev.getIdUser() != user.getIdUser()}">
+                        <p  th:text="${rev.getReviewText()}">IdUser: review text</p>
+                    </li>
+                </ul>
         </div>
     </div>
-    <div class="col-7 ml-5">
-        <h2 class="text-success">All reviews</h2>
-            <h3>From other users</h3>
-            <ul class="mt-5" th:each="rev : ${reviews}">
-                <li th:if = "${rev.getIdUser() != user.getIdUser()}" >
-                    <p th:text="'IdUser ' + ${rev.getIdUser()} + ': ' + ${rev.getReviewText()}">IdUser: review text</p>
-                </li>
-            </ul>
-            <h3>Your reviews</h3>
-            <ul class="mt-5" th:each="rev : ${reviews}">
-                <li th:unless = "${rev.getIdUser() != user.getIdUser()}">
-                    <p  th:text="${rev.getReviewText()}">IdUser: review text</p>
-                </li>
-            </ul>
-    </div>
-</div>
-
 </div>
 <div th:unless="${product != null}" >
     <h2 class="text-success text-center">There's no product for today </h2>

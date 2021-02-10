@@ -15,10 +15,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 import java.io.IOException;
 import java.util.Map;
 
-@WebServlet(name = "UserHomePage", value = "/LeaderBoard")
+@WebServlet(name = "LeaderBoard", value = "/LeaderBoard")
 public class LeaderBoard extends HttpServlet {
 
 
@@ -28,7 +32,9 @@ public class LeaderBoard extends HttpServlet {
     @EJB(beanName = "ProductService")
     ProductService productService;
 
-    TemplateEngine templateEngine;
+    private final TemplateEngine templateEngine = new TemplateEngine();
+
+    private final String path = "LeaderBoard";
 
     @Override
     public void init() throws ServletException {
@@ -42,9 +48,17 @@ public class LeaderBoard extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Map<User, Integer> board = userQuestionnaire.getLeaderBoard();
+        Map<User, Integer> board = null;
+        try {
+            board = userQuestionnaire.getLeaderBoard();
+        } catch (HeuristicRollbackException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         WebContext ctx = new WebContext(req, resp, getServletContext(), req.getLocale());
         ctx.setVariable("product", productService.getProductOfTheDay());
         ctx.setVariable("board", board);
+        templateEngine.process(path, ctx, resp.getWriter());
     }
 }

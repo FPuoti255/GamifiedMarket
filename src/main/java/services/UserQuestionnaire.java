@@ -87,21 +87,7 @@ public class UserQuestionnaire implements Serializable {
         }
     }
 
-    public Map<User, Integer> getLeaderBoard(){
-        Map<User, Integer> UserPoints = new HashMap<>();
 
-        List<UserQuestionnairePoints> myData = (List<UserQuestionnairePoints>) em.createNamedQuery("UserQuestionnairePoints")
-                .setParameter(
-                        1,
-                        pdrService.getProductOfTheDay().getIdProduct())
-                .getResultList();
-
-        for(UserQuestionnairePoints i : myData){
-            UserPoints.put(em.find( User.class, i.getIdUser()), i.getUserPoints());
-        }
-
-        return UserPoints;
-    }
 
     public UserAction validateUserQuestionnaire() throws IllegalArgumentException, SystemException, NotSupportedException {
 
@@ -146,6 +132,28 @@ public class UserQuestionnaire implements Serializable {
         }
 
         return act;
+    }
+
+    public Map<User, Integer> getLeaderBoard() throws HeuristicRollbackException, RollbackException, HeuristicMixedException, SystemException, NotSupportedException {
+        Map<User, Integer> UserPoints = new HashMap<>();
+
+        utx.begin();
+
+        List<UserQuestionnairePoints> myData = (List<UserQuestionnairePoints>) em.createNamedQuery("UserQuestionnairePoints")
+                .setParameter(
+                        1,
+                        pdrService.getProductOfTheDay().getIdProduct())
+                .getResultList();
+
+        if(myData != null){
+            for (UserQuestionnairePoints i : myData) {
+                UserPoints.put(em.find(User.class, i.getIdUser()), i.getUserPoints());
+            }
+        }
+
+        utx.commit();
+
+        return UserPoints;
     }
 
     public void cancelQuestionnaire(User user) {
