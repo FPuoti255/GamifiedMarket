@@ -1,12 +1,15 @@
 package controllers;
 
+import Utils.UserAction;
 import entities.Answer;
 import entities.Product;
 import entities.Question;
+import entities.QuestionnaireLog;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+import services.Logger;
 import services.ProductService;
 import services.QuestionService;
 import services.QuestionnaireService;
@@ -29,6 +32,9 @@ public class InspectQuestionnaire extends HttpServlet {
 
     @EJB(beanName = "QuestionnaireService")
     QuestionnaireService links;
+
+    @EJB(beanName = "Logger")
+    Logger logger;
 
     private final TemplateEngine engine = new TemplateEngine();
     private final String localPath = "InspectQuestionnaire";
@@ -55,6 +61,19 @@ public class InspectQuestionnaire extends HttpServlet {
         // get the questions
         List<Question> questions = links.retrieveQuestions(idProduct);
 
+        List<QuestionnaireLog> qstLog = logger.retrieveProductLog(idProduct);
+        int numSubmitted = 0;
+        int numCancelled = 0;
+
+        if( qstLog != null){
+            numSubmitted = (int) qstLog.stream()
+                    .filter(x -> UserAction.parseName(x.getAction()) == UserAction.SUBMITTED).count();
+
+            numCancelled = (int) qstLog.stream()
+                    .filter(x -> UserAction.parseName(x.getAction()) == UserAction.CANCELLED).count();
+        }
+
+
         // get all the answers: the template will sort them out accordingly
         List<Answer> answers = new ArrayList<>();
         for(Question q : questions){
@@ -76,6 +95,9 @@ public class InspectQuestionnaire extends HttpServlet {
                 "product",
                 products.getProductById(idProduct)
         );
+
+        context.setVariable("numSubmitted", numSubmitted);
+        context.setVariable("numCancelled", numCancelled);
 
         engine.process(localPath, context, resp.getWriter());
     }

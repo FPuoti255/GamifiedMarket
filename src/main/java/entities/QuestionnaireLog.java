@@ -6,6 +6,8 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "questionnaire_log")
 @IdClass(QuestionnaireLogPK.class)
+@NamedQuery(name = "QuestionnaireLog.retrieveProductLog",
+        query = "SELECT ql FROM QuestionnaireLog as ql WHERE ql.idProduct = ?1")
 public class QuestionnaireLog {
 
     private int idUser;

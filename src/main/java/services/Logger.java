@@ -9,6 +9,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 @Stateless
 public class Logger {
@@ -38,5 +40,13 @@ public class Logger {
             );
         }
         em.flush();
+    }
+
+    public List<QuestionnaireLog> retrieveProductLog(int productId){
+        List<QuestionnaireLog> logs = (List<QuestionnaireLog>) em.createNamedQuery("QuestionnaireLog.retrieveProductLog")
+                .setParameter(1, productId)
+                .getResultList();
+        if(logs != null && !logs.isEmpty()) return logs;
+        else return null;
     }
 }

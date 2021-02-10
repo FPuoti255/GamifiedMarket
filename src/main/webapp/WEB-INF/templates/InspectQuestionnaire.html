@@ -21,8 +21,8 @@
 
     <!-- general information about the questionnaire-->
     <div class="mt-5 text-center">
-        Users that completed the questionnaire: <label th:text="${answers.size() / questions.size()}"></label> <br />
-        Users that cancelled the questionnaire: <!-- TODO implement this log function. -->
+        Users that completed the questionnaire: <p th:text="${numSubmitted}"></p> <br />
+        Users that cancelled the questionnaire: <p th:text="${numCancelled}"></p> <br />
     </div>
 
     <!-- list of questions -->
