@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      lang="en" th:lang="it" xmlns:th="http://www.thymeleaf.org">
+      lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <!-- Meta tag required for boostrap -->
     <meta charset="UTF-8">
@@ -35,11 +35,17 @@
     <!-- The administrator lands on the "create questionnaire / add product of the day" page -->
     <div class="mt-5 text-center" >
         Insert a new product! <br />
-        <form action="AdminHomePage" method="post">
+        <form action="AdminHomePage" method="post" enctype="multipart/form-data">
             <textarea id="productName" name="productName" cols="50"
                       placeholder="Here goes the name of the product"></textarea> <br/>
             <input id="productImage" name="productImage" type="file">
-            <input id="productDate" name="productDate" type="date" min="${today.toString()}">
+            <input id="productDate" name="productDate" type="date" th:min="${today.toString()}">
+            <p>Here you can add statistical questions to your questionnaire.</p>
+            <p>You can choose among some questions already in our database</p>
+            <ul th:each="qst : ${qstsProposed}" >
+                <input type="checkbox" th:id="${qst.getIdQuestion()}" th:name = "${qst.getIdQuestion()}">
+                <label th:for="${qst.getIdQuestion()}" th:text="${qst.getQuestionText()}"></label>
+            </ul>
             <button type="submit" class="btn btn-primary">Add</button>
         </form>
     </div>

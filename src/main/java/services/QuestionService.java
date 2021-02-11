@@ -29,6 +29,8 @@ public class QuestionService {
         em.flush();
     }
 
+
+
     /**
      * I know we've defined the named query, but it does not work
      * @param qText the text of the question searched
@@ -40,4 +42,9 @@ public class QuestionService {
         }
         return -1;
     }
+
+    public List<Question> getAllQuestions() {
+        return em.createNamedQuery("Question.findAllQuestions", Question.class).getResultList();
+    }
+
 }

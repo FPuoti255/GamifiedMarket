@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="GamifiedMarket" target="1.8" />
+      <module name="GamifiedMarket" target="9" />
     </bytecodeTargetLevel>
   </component>
 </project>

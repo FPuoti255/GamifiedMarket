@@ -20,6 +20,7 @@ import java.io.IOException;
 
 @WebServlet(name = "AddQuestions", value = "/AddQuestions")
 public class AddQuestions extends HttpServlet {
+
     @EJB(beanName = "ProductService")
     ProductService products;
 

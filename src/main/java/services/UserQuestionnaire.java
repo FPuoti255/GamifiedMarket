@@ -139,7 +139,7 @@ public class UserQuestionnaire implements Serializable {
 
         utx.begin();
 
-        List<UserQuestionnairePoints> myData = (List<UserQuestionnairePoints>) em.createNamedQuery("UserQuestionnairePoints")
+        List<UserQuestionnairePoints> myData = em.createNamedQuery("UserQuestionnairePoints", UserQuestionnairePoints.class)
                 .setParameter(
                         1,
                         pdrService.getProductOfTheDay().getIdProduct())
