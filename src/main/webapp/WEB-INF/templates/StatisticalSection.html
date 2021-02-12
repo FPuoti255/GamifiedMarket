@@ -14,7 +14,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Gamified market</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -43,21 +44,89 @@
         <label for="marketingSection"
                class="fst-italic text-decoration-underline">These are the statistical section of the questionnaire.
             The questions are not mandatory.</label>
+        <!-------- FIRST TIME ON THE QUESTIONNAIRE----------->
         <form id="marketingSection" action="QuestionnaireServletStatistical" method="post">
             <ul th:if="${answers == null}" th:each="qstn : ${questions}">
                 <li>
                     <label th:for="${qstn.getIdQuestion()}"
                            th:text="${qstn.getQuestionByIdQuestion().getQuestionText()}">question text</label>
-                    <textarea class="form-control" placeholder="Leave your answer here"
-                              th:id="${qstn.getIdQuestion()}" th:name="${qstn.getIdQuestion()}"></textarea>
+                    <div th:if="${#strings.containsIgnoreCase(qstn.getQuestionByIdQuestion().getQuestionText(), 'sex')}">
+
+                        <input type="radio" id="male" th:name="${qstn.getIdQuestion()}" value="male">
+                        <label for="male">Male</label>
+                        <input type="radio" id="female" th:name="${qstn.getIdQuestion()}" value="female">
+                        <label for="female">Female</label>
+                        <input type="radio" id="other" th:name="${qstn.getIdQuestion()}" value="other">
+                        <label for="other">Other</label>
+
+                    </div>
+                    <div th:if="${#strings.containsIgnoreCase(qstn.getQuestionByIdQuestion().getQuestionText(), 'expertise')}">
+
+                        <input type="radio" id="low" th:name="${qstn.getIdQuestion()}" value="low">
+                        <label for="low">Low</label>
+                        <input type="radio" id="medium" th:name="${qstn.getIdQuestion()}" value="medium">
+                        <label for="medium">Medium</label>
+                        <input type="radio" id="high" th:name="${qstn.getIdQuestion()}" value="high">
+                        <label for="high">High</label>
+                    </div>
+                    <div th:if="${#strings.containsIgnoreCase(qstn.getQuestionByIdQuestion().getQuestionText(), 'age')}">
+                        <input type="number" min="1" max="100" th:name="${qstn.getIdQuestion()}" value="1">
+                    </div>
+
+                    <div th:unless="${
+                                      #strings.containsIgnoreCase(qstn.getQuestionByIdQuestion().getQuestionText(), 'sex') ||
+                                      #strings.containsIgnoreCase(qstn.getQuestionByIdQuestion().getQuestionText(), 'expertise') ||
+                                      #strings.containsIgnoreCase(qstn.getQuestionByIdQuestion().getQuestionText(), 'age')
+                                      }">
+                        <textarea class="form-control" placeholder="Leave your answer here"
+                                  th:id="${qstn.getIdQuestion()}" th:name="${qstn.getIdQuestion()}"></textarea>
+                    </div>
                 </li>
             </ul>
+
+            <!-------- REVIEW YOUR ANSWERS----------->
+
             <ul th:unless="${answers == null}" th:each="asw : ${answers}">
                 <li>
                     <label th:for="${asw.getIdQuestion()}" th:text="${asw.getQuestionByIdQuestion().getQuestionText()}">question
                         text</label>
-                    <textarea class="form-control" placeholder="Leave your answer here" th:text="${asw.getAnswerText()}"
-                              th:id="${asw.getIdQuestion()}" th:name="${asw.getIdQuestion()}"></textarea>
+                    <div th:if="${#strings.containsIgnoreCase(asw.getQuestionByIdQuestion().getQuestionText(), 'sex')}">
+                        <input type="radio" id="male1" th:name="${asw.getIdQuestion()}" value="male"
+                               th:checked="${#strings.contains(asw.getAnswerText(), 'male')} ? True : False">
+                        <label for="male1">Male</label>
+                        <input type="radio" id="female1" th:name="${asw.getIdQuestion()}" value="female"
+                               th:checked="${#strings.contains(asw.getAnswerText(), 'female')} ? True : False">
+                        <label for="female1">Female</label>
+                        <input type="radio" id="other1" th:name="${asw.getIdQuestion()}" value="other"
+                               th:checked="${#strings.contains(asw.getAnswerText(), 'other')} ? True : False">
+                        <label for="other1">Other</label>
+
+                    </div>
+                    <div th:if="${#strings.containsIgnoreCase(asw.getQuestionByIdQuestion().getQuestionText(), 'expertise')}">
+                        <input type="radio" id="low1" th:name="${asw.getIdQuestion()}" value="low"
+                               th:checked="${#strings.contains(asw.getAnswerText(), 'low')} ? True : False">
+                        <label for="low1">Low</label>
+                        <input type="radio" id="medium1" th:name="${asw.getIdQuestion()}" value="medium"
+                               th:checked="${#strings.contains(asw.getAnswerText(), 'medium')} ? True : False">
+                        <label for="medium1">Medium</label>
+                        <input type="radio" id="high1" th:name="${asw.getIdQuestion()}" value="high"
+                               th:checked="${#strings.contains(asw.getAnswerText(), 'high')} ? True : False">
+                        <label for="high1">High</label>
+                    </div>
+                    <div th:if="${#strings.containsIgnoreCase(asw.getQuestionByIdQuestion().getQuestionText(), 'age')}">
+                        <input type="number" min="1" max="100" th:name="${asw.getIdQuestion()}"
+                               th:value="${asw.getAnswerText()}">
+                    </div>
+                    <div th:unless="${
+                                      #strings.containsIgnoreCase(asw.getQuestionByIdQuestion().getQuestionText(), 'sex') ||
+                                      #strings.containsIgnoreCase(asw.getQuestionByIdQuestion().getQuestionText(), 'expertise') ||
+                                      #strings.containsIgnoreCase(asw.getQuestionByIdQuestion().getQuestionText(), 'age')
+                                      }">
+
+                        <textarea class="form-control" placeholder="Leave your answer here"
+                                  th:text="${asw.getAnswerText()}"
+                                  th:id="${asw.getIdQuestion()}" th:name="${asw.getIdQuestion()}"></textarea>
+                    </div>
                 </li>
             </ul>
             <div class="btn-group-vertical">
@@ -67,8 +136,7 @@
                 </span>
                 <span>
                     <input id="del" class="form-check-input" type="checkbox" name="cancelled">
-                    <label for="del"> If you want to cancel your questionnaire, please check here. Otherwise, your responses
-                        would be submitted</label><br>
+                    <label for="del">Check here to cancel your questionnaire</label><br>
                 </span>
             </div>
             <button type="submit" class="btn btn-primary my-5" value="Submit">Submit</button>

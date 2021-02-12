@@ -49,6 +49,9 @@
             <button type="submit" class="btn btn-primary">Add</button>
         </form>
     </div>
+    <div class="mt-5 text-center">
+        <p class="text-danger" th:text="${errorMsg}">Possible Error Message</p>
+    </div>
 
     <!-- Box for the product of the day -->
     <div th:unless="${product == null}" class="mt-5 text-center">

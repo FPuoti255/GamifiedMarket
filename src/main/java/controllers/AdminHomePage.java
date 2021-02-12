@@ -1,4 +1,5 @@
 package controllers;
+import Utils.DateAlreadySelected;
 import entities.Product;
 import entities.Question;
 import org.thymeleaf.TemplateEngine;
@@ -63,9 +64,14 @@ public class AdminHomePage extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        renderPage(req, resp, null);
+    }
+
+    private void renderPage(HttpServletRequest req, HttpServletResponse resp, String errorMsg) throws IOException {
         final WebContext context = new WebContext(req, resp, getServletContext(), req.getLocale());
 
         Product dayProduct = products.getProductOfTheDay();
+        context.setVariable("errorMsg", errorMsg);
         context.setVariable("product", dayProduct);
         context.setVariable("qstsProposed",
                 qstService.getAllQuestions().stream().filter( x -> x.getPoints() == 2) //Only the marketing can be added (from assignment)
@@ -124,26 +130,29 @@ public class AdminHomePage extends HttpServlet {
          * marshal the parameters from the form and invoke the
          * productService to add the product to the database
          */
-        Product p = products.addProduct(
-                productName,
-                image,
-                Date.valueOf(req.getParameter("productDate"))
-        );
+        Product p = null;
+        try{
+            p = products.addProduct(
+                    productName,
+                    image,
+                    productDate);
+        }catch (DateAlreadySelected ds) {
+            renderPage(req, resp, "The selected date has been already chosen for another product!");
+            return;
+        }
 
+        if( p == null){
+            renderPage(req, resp, "Ops something went wrong!");
+            return;
+        }
 
         //Inserting questions to the product questionnaire
         for(Question qst : qstService.getAllQuestions()){
             if(req.getParameter(Integer.toString(qst.getIdQuestion())) != null){
-                //TODO The product id is not available just after the product insertion. How can we get it?
                 questionnaireService.linkQuestionToProduct(qst.getIdQuestion(), p.getIdProduct());
             }
         }
 
-        /**
-         * reload page
-         * it's done by redirecting to this page instead of reprocessing the template to
-         * trigger a get call and a subsequent refresh of the elements
-         */
-        resp.sendRedirect(path);
+        renderPage(req, resp, null);
     }
 }

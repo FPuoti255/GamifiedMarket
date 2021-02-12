@@ -30,6 +30,7 @@ public class Question {
 
     @Id
     @Column(name = "id_question", nullable = false)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public int getIdQuestion() {
         return idQuestion;
     }

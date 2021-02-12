@@ -1,6 +1,8 @@
 package controllers;
 
+import Utils.ExpertiseLevel;
 import Utils.QuestionnaireSection;
+import Utils.Sex;
 import Utils.UserAction;
 import entities.Answer;
 import entities.Questionnaire;
@@ -78,7 +80,24 @@ public class QuestionnaireServletStatistical extends HttpServlet {
             answer.setIdUser(user.getIdUser());
             answer.setIdProduct(userQuestionnaire.getProduct().getIdProduct());
             answer.setIdQuestion(qst.getIdQuestion());
-            answer.setAnswerText(request.getParameter(String.valueOf(qst.getIdQuestion())));
+            String answerText = request.getParameter(String.valueOf(qst.getIdQuestion()));
+            if(qst.getQuestionByIdQuestion().getQuestionText().toLowerCase().contains("sex")){
+                if(!answerText.equals(Sex.MALE.getName()) &&
+                    !answerText.equals(Sex.FEMALE.getName()) &&
+                    !answerText.equals(Sex.OTHER.getName())) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    return;
+                }
+            }
+            if(qst.getQuestionByIdQuestion().getQuestionText().toLowerCase().contains("expertise")){
+                if(!answerText.equals(ExpertiseLevel.LOW.getName()) &&
+                        !answerText.equals(ExpertiseLevel.MEDIUM.getName()) &&
+                        !answerText.equals(ExpertiseLevel.HIGH.getName())) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    return;
+                }
+            }
+            answer.setAnswerText(answerText);
             answer.setQuestionByIdQuestion(qst.getQuestionByIdQuestion());
             if (answer.getAnswerText() != null & !answer.getAnswerText().isEmpty()) {
                 userAnswers.add(answer);

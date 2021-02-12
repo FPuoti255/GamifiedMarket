@@ -13,6 +13,7 @@ import java.util.Collection;
         @NamedQuery(name = "Product.findAllProducts", query = "select p from Product p"),
         @NamedQuery(name = "Product.getPastProduct", query = "SELECT p from Product p WHERE p.date < current_date"),
         @NamedQuery(name = "Product.getProductOfTheDay", query = "SELECT p from Product p WHERE p.date = current_date"),
+        @NamedQuery(name = "Product.getProductByDate", query = "SELECT p from Product p WHERE p.date = ?1"),
         @NamedQuery(name = "Product.getProductByIdProduct", query = "SELECT p FROM Product p where p.idProduct = :idProduct")
 })
 public class Product {
@@ -38,6 +39,7 @@ public class Product {
 
     @Id
     @Column(name = "id_product", nullable = false)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public int getIdProduct() {
         return idProduct;
     }

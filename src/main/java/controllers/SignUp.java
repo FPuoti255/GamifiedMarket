@@ -59,8 +59,6 @@ public class SignUp extends HttpServlet {
             templateEngine.process(path, ctx, response.getWriter());
             return;
         }
-
-        request.getSession().setAttribute("user", newUser);
         response.sendRedirect("index.html");
     }
 

@@ -1,5 +1,6 @@
 package services;
 
+import Utils.DateAlreadySelected;
 import entities.Product;
 import entities.Review;
 
@@ -59,9 +60,6 @@ public class ProductService {
         }catch (Exception x){
             return null;
         }
-
-        refresh();
-
         return newRev;
     }
 
@@ -73,26 +71,22 @@ public class ProductService {
      * @param productDate the date in which this product is product of the day
      * @return
      */
-    public Product addProduct(String productName, byte[] productImage, Date productDate){
+    public Product addProduct(String productName, byte[] productImage, Date productDate) throws DateAlreadySelected {
         Product newProduct = new Product(productName, productImage, productDate);
-
-        try{
-            em.persist(newProduct);
-            em.flush();
-        }catch (Exception x){
-            return null;
+        try {
+            em.createNamedQuery("Product.getProductByDate").setParameter(1, productDate).getSingleResult();
+        }catch(NoResultException e){
+            try{
+                em.persist(newProduct);
+                em.flush();
+            }catch (Exception x){
+                return null;
+            }
+            //refresh();
+            return newProduct;
         }
-        refresh();
-        return newProduct;
-    }
+        throw new DateAlreadySelected();
 
-    /**
-     * refresh routine for the entity manager.
-     */
-    private void refresh(){
-        em.clear();
-        List<Product> ps = em.createNamedQuery("Product.findAllProducts", Product.class).getResultList();
-        for(Product p : ps) em.refresh(p);
     }
 
     public List<Product> getPastProducts() {
@@ -111,7 +105,6 @@ public class ProductService {
 
         em.remove(getProductById(toRemoveProductId));
         em.flush();
-        refresh();
     }
 }
 
