@@ -32,27 +32,6 @@
         </div>
     </nav>
 
-    <!-- The administrator lands on the "create questionnaire / add product of the day" page -->
-    <div class="mt-5 text-center" >
-        Insert a new product! <br />
-        <form action="AdminHomePage" method="post" enctype="multipart/form-data">
-            <textarea id="productName" name="productName" cols="50"
-                      placeholder="Here goes the name of the product"></textarea> <br/>
-            <input id="productImage" name="productImage" type="file">
-            <input id="productDate" name="productDate" type="date" th:min="${today.toString()}">
-            <p>Here you can add statistical questions to your questionnaire.</p>
-            <p>You can choose among some questions already in our database</p>
-            <ul th:each="qst : ${qstsProposed}" >
-                <input type="checkbox" th:id="${qst.getIdQuestion()}" th:name = "${qst.getIdQuestion()}">
-                <label th:for="${qst.getIdQuestion()}" th:text="${qst.getQuestionText()}"></label>
-            </ul>
-            <button type="submit" class="btn btn-primary">Add</button>
-        </form>
-    </div>
-    <div class="mt-5 text-center">
-        <p class="text-danger" th:text="${errorMsg}">Possible Error Message</p>
-    </div>
-
     <!-- Box for the product of the day -->
     <div th:unless="${product == null}" class="mt-5 text-center">
         Product of today:
@@ -60,9 +39,15 @@
         <br />
         <img class="img-thumbnail text-center" th:src="*{'data:image/png;base64,'+ product.imageString()}"
              alt="ProductImage" th:alt="'Image of: '+ ${product.getName()}">
-        <a href="AddQuestions"> Add questionnaire questions </a>
+    </div>
+    <div th:if="${product == null}" class="mt-5 text-center">
+        <p>There's no product for today</p>
     </div>
 
+    <!-- Link to the reviewQuestionnaire page -->
+    <div  class="mt-5 text-center">
+        <a href="AddNewProduct"> Add a new product! </a>
+    </div>
     <!-- Link to the reviewQuestionnaire page -->
     <div  class="mt-5 text-center">
         <a href="ReviewQuestionnaires"> Review past questionnaires </a>

@@ -20,13 +20,14 @@ public class QuestionService {
     /**
      * adds a question to the database
      */
-    public void addQuestion(String questionText, int questionPoints){
+    public Question addQuestion(String questionText, int questionPoints){
         Question q = new Question(
             questionText,
             questionPoints
         );
         em.persist(q);
         em.flush();
+        return q;
     }
 
 
@@ -37,7 +38,7 @@ public class QuestionService {
      * @return the question id
      */
     public int findQuestionByText(String qText){
-        for(Question q : (List<Question>)em.createNamedQuery("Question.findAllQuestions").getResultList()){
+        for(Question q : em.createNamedQuery("Question.findAllQuestions", Question.class).getResultList()){
             if(q.getQuestionText().equals(qText)) return q.getIdQuestion();
         }
         return -1;

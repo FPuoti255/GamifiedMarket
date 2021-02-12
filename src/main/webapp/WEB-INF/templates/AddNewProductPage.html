@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      lang="en" th:lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Meta tag required for boostrap -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>Add Questions</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Gamified market</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="AdminHomePage">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="LogOut">Log out</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- The administrator lands on the "create questionnaire / add product of the day" page -->
+<div class="mt-5 text-center">
+    Insert a new product! <br/>
+    <form action="AddNewProduct" method="post" enctype="multipart/form-data">
+            <textarea id="productName" name="productName" cols="50"
+                      placeholder="Here goes the name of the product"></textarea> <br/>
+        <input id="productImage" name="productImage" type="file">
+        <input id="productDate" name="productDate" type="date" th:min="${today.toString()}">
+        <p>Add a new question in the box below. Use the enter button to divide the questions.
+        <p><br/>
+            <textarea id="questionText" name="questionText" cols="50"></textarea><br/>
+        <div th:if="${questions.size() > 0}">
+            <p>You can choose among some questions already in our database</p>
+            <ul th:each="qst : ${questions}">
+                <input type="checkbox" th:id="${qst.getIdQuestion()}" th:name="${qst.getIdQuestion()}">
+                <label th:for="${qst.getIdQuestion()}" th:text="${qst.getQuestionText()}"></label>
+            </ul>
+        </div>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+</div>
+<div class="mt-5 text-center">
+    <p class="text-danger" th:text="${errorMsg}">Possible Error Message</p>
+</div>
+</body>
+</html>
