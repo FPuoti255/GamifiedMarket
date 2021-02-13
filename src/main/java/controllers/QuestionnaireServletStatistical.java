@@ -63,6 +63,9 @@ public class QuestionnaireServletStatistical extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
 
+        // user don't want to respond
+
+
         User user = (User) request.getSession().getAttribute("user");
         String msg = "";
 
@@ -75,37 +78,39 @@ public class QuestionnaireServletStatistical extends HttpServlet {
         List<Answer> userAnswers = new ArrayList<>();
         Answer answer;
 
-        for (Questionnaire qst : userQuestionnaire.getCurrentSectionQuestions()) {
-            answer = new Answer();
-            answer.setIdUser(user.getIdUser());
-            answer.setIdProduct(userQuestionnaire.getProduct().getIdProduct());
-            answer.setIdQuestion(qst.getIdQuestion());
-            String answerText = request.getParameter(String.valueOf(qst.getIdQuestion()));
-            if(qst.getQuestionByIdQuestion().getQuestionText().toLowerCase().contains("sex")){
-                if(!answerText.equals(Sex.MALE.getName()) &&
-                    !answerText.equals(Sex.FEMALE.getName()) &&
-                    !answerText.equals(Sex.OTHER.getName())) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                    return;
+        if (request.getParameter("empty") == null) {
+            for (Questionnaire qst : userQuestionnaire.getCurrentSectionQuestions()) {
+                answer = new Answer();
+                answer.setIdUser(user.getIdUser());
+                answer.setIdProduct(userQuestionnaire.getProduct().getIdProduct());
+                answer.setIdQuestion(qst.getIdQuestion());
+                String answerText = request.getParameter(String.valueOf(qst.getIdQuestion()));
+                if (qst.getQuestionByIdQuestion().getQuestionText().toLowerCase().contains("sex")) {
+                    if (!answerText.equals(Sex.MALE.getName()) &&
+                            !answerText.equals(Sex.FEMALE.getName()) &&
+                            !answerText.equals(Sex.OTHER.getName())) {
+                        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                        return;
+                    }
+                }
+                if (qst.getQuestionByIdQuestion().getQuestionText().toLowerCase().contains("expertise")) {
+                    if (!answerText.equals(ExpertiseLevel.LOW.getName()) &&
+                            !answerText.equals(ExpertiseLevel.MEDIUM.getName()) &&
+                            !answerText.equals(ExpertiseLevel.HIGH.getName())) {
+                        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                        return;
+                    }
+                }
+                answer.setAnswerText(answerText);
+                answer.setQuestionByIdQuestion(qst.getQuestionByIdQuestion());
+                if (answer.getAnswerText() != null & !answer.getAnswerText().isEmpty()) {
+                    userAnswers.add(answer);
                 }
             }
-            if(qst.getQuestionByIdQuestion().getQuestionText().toLowerCase().contains("expertise")){
-                if(!answerText.equals(ExpertiseLevel.LOW.getName()) &&
-                        !answerText.equals(ExpertiseLevel.MEDIUM.getName()) &&
-                        !answerText.equals(ExpertiseLevel.HIGH.getName())) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                    return;
-                }
-            }
-            answer.setAnswerText(answerText);
-            answer.setQuestionByIdQuestion(qst.getQuestionByIdQuestion());
-            if (answer.getAnswerText() != null & !answer.getAnswerText().isEmpty()) {
-                userAnswers.add(answer);
-            }
-        }
 
-        if (!userAnswers.isEmpty()) {
-            userQuestionnaire.setUserStatisticalAnswers(userAnswers);
+            if (!userAnswers.isEmpty()) {
+                userQuestionnaire.setUserStatisticalAnswers(userAnswers);
+            }
         }
 
         if (request.getParameter("turnBack") != null) {
@@ -113,16 +118,17 @@ public class QuestionnaireServletStatistical extends HttpServlet {
         } else {
             try {
                 UserAction act = userQuestionnaire.validateUserQuestionnaire();
-                if(act == UserAction.BANNED){
+                if (act == UserAction.BANNED) {
                     request.getSession().invalidate();
                     msg = "Ops, we detected swears in your answers. From now on, you're banned from our website.";
-                }else  msg = "Thank you for having submitted the questionnaire!" ;
+                } else msg = "Thank you for having submitted the questionnaire!";
 
                 renderEndQuestionnairePage(request, response, msg);
-            }catch( SystemException | NotSupportedException e2){
+            } catch (SystemException | NotSupportedException e2) {
                 e2.printStackTrace();
             }
         }
+
     }
 
 

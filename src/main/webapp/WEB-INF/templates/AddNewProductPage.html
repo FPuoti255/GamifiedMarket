@@ -34,9 +34,9 @@
 </nav>
 
 <div class="mt-5 text-center">
-    Insert a new product! <br/>
+    <h3>Insert a new product</h3>
     <form action="AddNewProduct" method="post" enctype="multipart/form-data">
-        <div class="m-10">
+        <div class="mb-10">
             <textarea id="productName" name="productName" cols="50"
                       placeholder="Here goes the name of the product"></textarea> <br/>
             <input id="productImage" name="productImage" type="file">
@@ -44,7 +44,9 @@
             <label class="text-info" for="productDate">Notice that, if the product of the day is already set, you cannot choose the current
                 date!</label>
         </div>
-        <div class="m-10">
+        <br /><br />
+        <div class="mt-10">
+            <h3>Edit questionnaire</h3>
             <textarea id="questionText" name="questionText" cols="50"
                       placeholder="Add a new question in this box. Use the enter button to divide the questions."></textarea><br/>
             <div th:if="${questions.size() > 0}">
