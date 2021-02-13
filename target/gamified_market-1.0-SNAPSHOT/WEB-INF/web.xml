@@ -7,7 +7,7 @@
     <filter-mapping>
         <filter-name>LoginFilter</filter-name>
         <url-pattern>/AdminHomePage</url-pattern>
-        <url-pattern>/AddQuestions</url-pattern>
+        <url-pattern>/AddNewProduct</url-pattern>
         <url-pattern>/InspectQuestionnaire</url-pattern>
         <url-pattern>/QuestionnaireServletMapping</url-pattern>
         <url-pattern>/QuestionnaireServletStatistical</url-pattern>
@@ -15,6 +15,7 @@
         <url-pattern>/RemoveQuestionnaire</url-pattern>
         <url-pattern>/ReviewQuestionnaires</url-pattern>
         <url-pattern>/UserHomePage</url-pattern>
+        <url-pattern>/LogOut</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>UserFilter</filter-name>
@@ -26,7 +27,7 @@
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/AdminHomePage</url-pattern>
-        <url-pattern>/AddQuestions</url-pattern>
+        <url-pattern>/AddNewProduct</url-pattern>
         <url-pattern>/InspectQuestionnaire</url-pattern>
         <url-pattern>/RemoveQuestionnaire</url-pattern>
         <url-pattern>/ReviewQuestionnaires</url-pattern>
@@ -34,6 +35,4 @@
         <welcome-file-list>
             <welcome-file>index.html</welcome-file>
         </welcome-file-list>
-
-
 </web-app>

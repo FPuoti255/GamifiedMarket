@@ -38,14 +38,21 @@
     </nav>
 
     <div class="m-5" th:unless="${board.isEmpty()}">
-        <ol th:each="userpoints : ${board}">
-            <li class="m-5 text-center">
-                <span>
-                    <label th:text="${userpoints.key.getUsername() + ': '}"></label>
-                    <label th:text="${userpoints.value}"></label>
-                </span>
-            </li>
-        </ol>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Points</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="userpoint : ${board}">
+                    <td th:text="${userpoint.key.getUsername()}"></td>
+                    <td th:text="${userpoint.value}"></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <div th:if="${board.isEmpty()}">
         <h2 class="text-center text-success">No user took the questionnaire so far! Be the first!</h2>

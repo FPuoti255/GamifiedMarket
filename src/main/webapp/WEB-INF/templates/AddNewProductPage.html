@@ -33,25 +33,27 @@
     </div>
 </nav>
 
-<!-- The administrator lands on the "create questionnaire / add product of the day" page -->
 <div class="mt-5 text-center">
     Insert a new product! <br/>
     <form action="AddNewProduct" method="post" enctype="multipart/form-data">
+        <div class="m-10">
             <textarea id="productName" name="productName" cols="50"
                       placeholder="Here goes the name of the product"></textarea> <br/>
-        <input id="productImage" name="productImage" type="file">
-        <input id="productDate" name="productDate" type="date" th:min="${today.toString()}">
-        <label for="productDate">Notice that, if the product of the day is already set, you cannot choose the current
-            date!</label>
-        </br>
-        <textarea id="questionText" name="questionText" cols="50"
-                  placeholder="Add a new question in the box below. Use the enter button to divide the questions."></textarea><br/>
-        <div th:if="${questions.size() > 0}">
-            <p>You can choose among some questions already in our database</p>
-            <ul th:each="qst : ${questions}">
-                <input type="checkbox" th:id="${qst.getIdQuestion()}" th:name="${qst.getIdQuestion()}">
-                <label th:for="${qst.getIdQuestion()}" th:text="${qst.getQuestionText()}"></label>
-            </ul>
+            <input id="productImage" name="productImage" type="file">
+            <input id="productDate" name="productDate" type="date" th:min="${today.toString()}"> <br />
+            <label class="text-info" for="productDate">Notice that, if the product of the day is already set, you cannot choose the current
+                date!</label>
+        </div>
+        <div class="m-10">
+            <textarea id="questionText" name="questionText" cols="50"
+                      placeholder="Add a new question in this box. Use the enter button to divide the questions."></textarea><br/>
+            <div th:if="${questions.size() > 0}">
+                <p>You can choose among some questions already in our database</p>
+                <ul th:each="qst : ${questions}">
+                    <input type="checkbox" th:id="${qst.getIdQuestion()}" th:name="${qst.getIdQuestion()}">
+                    <label th:for="${qst.getIdQuestion()}" th:text="${qst.getQuestionText()}"></label>
+                </ul>
+            </div>
         </div>
         <button type="submit" class="btn btn-primary">Add</button>
     </form>

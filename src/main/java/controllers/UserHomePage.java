@@ -94,7 +94,7 @@ public class UserHomePage extends HttpServlet {
                     UserAction.LEAVE_REVIEW,
                     pdr.getIdProduct()
             );
-            renderPage(request, response, null);
+            response.sendRedirect(path);
         }
     }
 
