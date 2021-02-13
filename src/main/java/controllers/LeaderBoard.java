@@ -6,7 +6,6 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import services.ProductService;
-import services.UserQuestionnaire;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
@@ -15,19 +14,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
 import java.io.IOException;
 import java.util.Map;
 
 @WebServlet(name = "LeaderBoard", value = "/LeaderBoard")
 public class LeaderBoard extends HttpServlet {
-
-
-    @EJB(beanName = "UserQuestionnaire")
-    UserQuestionnaire userQuestionnaire;
 
     @EJB(beanName = "ProductService")
     ProductService productService;
@@ -48,13 +39,10 @@ public class LeaderBoard extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Map<User, Integer> board = null;
-        try {
-            board = userQuestionnaire.getLeaderBoard();
-        } catch (HeuristicRollbackException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+        Map<User, Integer> board = productService.getLeaderBoard();
+        if(board == null){
+            resp.sendRedirect("UserHomePage");
+            return;
         }
         WebContext ctx = new WebContext(req, resp, getServletContext(), req.getLocale());
         ctx.setVariable("product", productService.getProductOfTheDay());

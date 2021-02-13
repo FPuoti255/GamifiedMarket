@@ -11,25 +11,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Gamified market</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="UserHomePage">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="LogOut">Log out</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<nav th:replace="navbars/UserNavBar :: navbar"></nav>
 
 <div class="mt-5 text-center">
     <p class="text-danger" th:text="${errorMsg}">Possible Error Message</p>
@@ -43,7 +25,7 @@
     <div class="col-7">
         <label for="marketingSection"
                class="fst-italic text-decoration-underline">These are the statistical section of the questionnaire.
-            The questions are not mandatory.</label>
+            The questions are not mandatory. Leave it blank if you do not wish to answer them.</label>
         <!-------- FIRST TIME ON THE QUESTIONNAIRE----------->
         <form id="marketingSection" action="QuestionnaireServletStatistical" method="post">
             <ul th:if="${answers == null}" th:each="qstn : ${questions}">
@@ -70,7 +52,7 @@
                         <label for="high">High</label>
                     </div>
                     <div th:if="${#strings.containsIgnoreCase(qstn.getQuestionByIdQuestion().getQuestionText(), 'age')}">
-                        <input type="number" min="1" max="100" th:name="${qstn.getIdQuestion()}" value="1">
+                        <input type="number" min="1" max="100" th:name="${qstn.getIdQuestion()}">
                     </div>
 
                     <div th:unless="${
@@ -138,11 +120,7 @@
                     <input id="del" class="form-check-input" type="checkbox" name="cancelled">
                     <label for="del">Check here to cancel your questionnaire</label><br>
                 </span>
-                <span>
-                    <input id="empty" class="form-check-input" type="checkbox" name="empty">
-                    <label for="empty">I won't respond to this section</label><br>
-                </span>
-            </div>
+            </div><br>
             <button type="submit" class="btn btn-primary my-5" value="Submit">Submit</button>
         </form>
     </div>

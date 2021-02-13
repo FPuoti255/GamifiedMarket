@@ -11,9 +11,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import javax.transaction.*;
 import javax.transaction.RollbackException;
@@ -72,7 +70,7 @@ public class UserQuestionnaire implements Serializable {
     public void initialize() {
         currentUserSection = QuestionnaireSection.MARKETING;
         product = pdrService.getProductOfTheDay();
-        questions = (List<Questionnaire>) pdrService.getProductOfTheDay().getQuestionnairesByIdProduct();
+        questions = (List<Questionnaire>) (product != null ? pdrService.getProductOfTheDay().getQuestionnairesByIdProduct() : null);
         invalidated = false;
     }
 
@@ -134,27 +132,6 @@ public class UserQuestionnaire implements Serializable {
         return act;
     }
 
-    public Map<User, Integer> getLeaderBoard() throws HeuristicRollbackException, RollbackException, HeuristicMixedException, SystemException, NotSupportedException {
-        Map<User, Integer> UserPoints = new HashMap<>();
-
-        utx.begin();
-
-        List<UserQuestionnairePoints> myData = em.createNamedQuery("UserQuestionnairePoints", UserQuestionnairePoints.class)
-                .setParameter(
-                        1,
-                        pdrService.getProductOfTheDay().getIdProduct())
-                .getResultList();
-
-        if(myData != null){
-            for (UserQuestionnairePoints i : myData) {
-                UserPoints.put(em.find(User.class, i.getIdUser()), i.getUserPoints());
-            }
-        }
-
-        utx.commit();
-
-        return UserPoints;
-    }
 
     public void cancelQuestionnaire(User user) {
         logger.logAction(

@@ -44,6 +44,9 @@ public class QuestionnaireServletMarketing extends HttpServlet {
     @Inject
     UserQuestionnaire userQuestionnaire;
 
+    @EJB(beanName = "ProductService")
+    ProductService pdrService;
+
     @Override
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
@@ -116,6 +119,12 @@ public class QuestionnaireServletMarketing extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User currentUser = (User) request.getSession().getAttribute("user");
+
+        if(pdrService.getProductOfTheDay() == null){
+            response.sendRedirect("UserHomePage");
+            return;
+        }
+
         if (userQuestionnaire.alreadyFulfilled(currentUser)) {
             renderMarketingPage(request, response, "You have already fulfilled the questionnaire for this product!");
         } else {

@@ -35,7 +35,6 @@ public class QuestionnaireServletStatistical extends HttpServlet {
     UserQuestionnaire userQuestionnaire;
 
 
-
     @Override
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
@@ -51,6 +50,7 @@ public class QuestionnaireServletStatistical extends HttpServlet {
 
         if (userQuestionnaire.getCurrentUserSection() != QuestionnaireSection.STATISTICAL) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
         }
 
         renderStatisticalPage(request, response);
@@ -61,30 +61,30 @@ public class QuestionnaireServletStatistical extends HttpServlet {
 
         if (userQuestionnaire.getCurrentUserSection() != QuestionnaireSection.STATISTICAL) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
         }
-
-        // user don't want to respond
 
 
         User user = (User) request.getSession().getAttribute("user");
         String msg = "";
 
-        if (request.getParameter("cancelled") != null){
+        if (request.getParameter("cancelled") != null) {
             userQuestionnaire.cancelQuestionnaire(user);
-            renderEndQuestionnairePage(request,response, msg = "Your questionnaire has been successfully cancelled.");
+            renderEndQuestionnairePage(request, response, msg = "Your questionnaire has been successfully cancelled.");
             return;
         }
 
         List<Answer> userAnswers = new ArrayList<>();
         Answer answer;
 
-        if (request.getParameter("empty") == null) {
-            for (Questionnaire qst : userQuestionnaire.getCurrentSectionQuestions()) {
+
+        for (Questionnaire qst : userQuestionnaire.getCurrentSectionQuestions()) {
+            String answerText = request.getParameter(String.valueOf(qst.getIdQuestion()));
+            if (answerText != null && !answerText.isEmpty()) {
                 answer = new Answer();
                 answer.setIdUser(user.getIdUser());
                 answer.setIdProduct(userQuestionnaire.getProduct().getIdProduct());
                 answer.setIdQuestion(qst.getIdQuestion());
-                String answerText = request.getParameter(String.valueOf(qst.getIdQuestion()));
                 if (qst.getQuestionByIdQuestion().getQuestionText().toLowerCase().contains("sex")) {
                     if (!answerText.equals(Sex.MALE.getName()) &&
                             !answerText.equals(Sex.FEMALE.getName()) &&
@@ -103,15 +103,14 @@ public class QuestionnaireServletStatistical extends HttpServlet {
                 }
                 answer.setAnswerText(answerText);
                 answer.setQuestionByIdQuestion(qst.getQuestionByIdQuestion());
-                if (answer.getAnswerText() != null & !answer.getAnswerText().isEmpty()) {
-                    userAnswers.add(answer);
-                }
-            }
-
-            if (!userAnswers.isEmpty()) {
-                userQuestionnaire.setUserStatisticalAnswers(userAnswers);
+                userAnswers.add(answer);
             }
         }
+
+        if (!userAnswers.isEmpty()) {
+            userQuestionnaire.setUserStatisticalAnswers(userAnswers);
+        }
+
 
         if (request.getParameter("turnBack") != null) {
             response.sendRedirect(request.getContextPath() + "/QuestionnaireServletMarketing");

@@ -1,5 +1,6 @@
 package controllers;
 
+import Utils.AlreadyReviewed;
 import Utils.UserAction;
 import entities.Product;
 import entities.Review;
@@ -12,6 +13,7 @@ import services.Logger;
 import services.ProductService;
 
 import javax.ejb.EJB;
+import javax.persistence.NoResultException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -53,22 +55,18 @@ public class UserHomePage extends HttpServlet {
 
         final WebContext ctx = new WebContext(request, response, getServletContext(), request.getLocale());
 
-        if (errorMsg != null) {
-            ctx.setVariable("errorMsg", errorMsg);
-            templateEngine.process(path, ctx, response.getWriter());
-            return;
-        }
-
         Product dayProduct;
-        List<Review> reviews;
+        List<Review> reviews = null;
+        dayProduct = pdrService.getProductOfTheDay();
+
         try {
-            dayProduct = pdrService.getProductOfTheDay();
-            reviews = pdrService.getReviews(dayProduct.getIdProduct());
+            if(dayProduct != null) reviews = pdrService.getReviews(dayProduct.getIdProduct());
         } catch (Throwable e) {
             ctx.setVariable("errorMsg", "Ops, something went wrong");
             templateEngine.process(path, ctx, response.getWriter());
             return;
         }
+        ctx.setVariable("errorMsg", errorMsg);
         ctx.setVariable("product", dayProduct);
         ctx.setVariable("reviews", reviews);
         ctx.setVariable("user", (User) request.getSession().getAttribute("user"));
@@ -79,23 +77,26 @@ public class UserHomePage extends HttpServlet {
         User sessionUser = (User) request.getSession().getAttribute("user");
         Product pdr = pdrService.getProductOfTheDay();
 
-        Review check = pdrService.addReview(
-                pdr.getIdProduct(),
-                sessionUser.getIdUser(),
-                request.getParameter("userRev"),
-                Timestamp.valueOf(LocalDateTime.now())
-        );
 
-        if (check == null) {
-            renderPage(request, response, "Ops, something went wrong");
-        } else {
-            logger.logAction(
+        try {
+            pdrService.addReview(
+                    pdr.getIdProduct(),
                     sessionUser.getIdUser(),
-                    UserAction.LEAVE_REVIEW,
-                    pdr.getIdProduct()
+                    request.getParameter("userRev"),
+                    Timestamp.valueOf(LocalDateTime.now())
             );
-            response.sendRedirect(path);
+        } catch (AlreadyReviewed alreadyReviewed) {
+            renderPage(request, response, "Sorry but you have already reviewed this product !");
+            return;
         }
-    }
 
+
+        logger.logAction(
+                sessionUser.getIdUser(),
+                UserAction.LEAVE_REVIEW,
+                pdr.getIdProduct()
+        );
+        renderPage(request, response, null);
+    }
 }
+

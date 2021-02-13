@@ -1,7 +1,6 @@
 package services;
 
 import entities.Answer;
-import entities.Product;
 import entities.Question;
 import entities.Questionnaire;
 
@@ -31,8 +30,6 @@ public class QuestionnaireService {
      * @return the list of the questions
      */
     public List<Question> retrieveQuestions(int IdProduct){
-        refresh();
-
         // retrieve the linked question's Id to this product
         List<Questionnaire> links = em.createNamedQuery("Questionnaire.getQuestions", Questionnaire.class)
                 .setParameter(1, IdProduct).getResultList();
@@ -61,15 +58,4 @@ public class QuestionnaireService {
         em.flush();
     }
 
-    /**
-     * "refresh all" method
-     */
-    private void refresh(){
-        em.flush();
-        em.clear();
-        List<Questionnaire> qs = em.createNamedQuery("Questionnaire.getAllQuestionnaires", Questionnaire.class).getResultList();
-        for(Questionnaire q : qs) em.refresh(q);
-        List<Question> qus = em.createNamedQuery("Question.findAllQuestions", Question.class).getResultList();
-        for(Question q : qus) em.refresh(q);
-    }
 }

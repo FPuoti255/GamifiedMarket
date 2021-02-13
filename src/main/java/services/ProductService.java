@@ -1,15 +1,21 @@
 package services;
 
+import Utils.AlreadyReviewed;
 import Utils.DateAlreadySelected;
 import entities.Product;
 import entities.Review;
+import entities.User;
+import entities.UserQuestionnairePoints;
 
 import javax.ejb.Stateless;
 import javax.persistence.*;
+import javax.transaction.*;
+import javax.transaction.RollbackException;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Stateless(name = "ProductService")
 
@@ -24,7 +30,7 @@ public class ProductService {
         Product productOfTheDay;
         try{
             productOfTheDay = em.createNamedQuery("Product.getProductOfTheDay", Product.class).getSingleResult();
-        }catch(Exception e){
+        }catch(NoResultException e){
             productOfTheDay = null;
         }
 
@@ -51,16 +57,38 @@ public class ProductService {
      * method to add a review to the specified product. parameters are self explicative
      * @author Elia Ravella
      */
-    public Review addReview(int IdProduct, int IdUser, String reviewTxt, Timestamp date){
+    public Review addReview(int IdProduct, int IdUser, String reviewTxt, Timestamp date) throws AlreadyReviewed {
         Review newRev = new Review(IdUser, IdProduct, reviewTxt, date);
 
         try{
             em.persist(newRev);
             em.flush();
-        }catch (Exception x){
-            return null;
+        }catch (PersistenceException x){
+            throw new AlreadyReviewed();
+        }catch (Exception e){
+            e.printStackTrace();
         }
         return newRev;
+    }
+
+    public Map<User, Integer> getLeaderBoard(){
+        Map<User, Integer> UserPoints = new HashMap<>();
+        Product pdr = getProductOfTheDay();
+        if(pdr!=null){
+            List<UserQuestionnairePoints> myData = em.createNamedQuery("UserQuestionnairePoints", UserQuestionnairePoints.class)
+                    .setParameter(
+                            1,
+                            getProductOfTheDay().getIdProduct())
+                    .getResultList();
+            if (myData != null)
+                for (UserQuestionnairePoints i : myData)
+                    UserPoints.put(em.find(User.class, i.getIdUser()), i.getUserPoints());
+
+            return UserPoints;
+        }else{
+            return null;
+        }
+
     }
 
     /**
@@ -74,18 +102,15 @@ public class ProductService {
     public Product addProduct(String productName, byte[] productImage, Date productDate) throws DateAlreadySelected {
         Product newProduct = new Product(productName, productImage, productDate);
         try {
-            em.createNamedQuery("Product.getProductByDate").setParameter(1, productDate).getSingleResult();
-        }catch(NoResultException e){
-            try{
-                em.persist(newProduct);
-                em.flush();
-            }catch (Exception x){
-                return null;
-            }
-            //refresh();
+            em.persist(newProduct);
+            em.flush();
             return newProduct;
+        } catch (PersistenceException e) {
+            throw new DateAlreadySelected();
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
-        throw new DateAlreadySelected();
 
     }
 
