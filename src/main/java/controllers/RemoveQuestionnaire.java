@@ -26,9 +26,17 @@ public class RemoveQuestionnaire extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        products.removeProduct(Integer.parseInt(
-                req.getParameter("idProduct")
-        ));
-        resp.sendRedirect("ReviewQuestionnaires");
+        int prodId = Integer.parseInt(req.getParameter("idProduct"));
+        if(products.getProductById(prodId) != null) {
+            try {
+                products.removeProduct(Integer.parseInt(
+                        req.getParameter("idProduct")
+                ));
+                resp.sendRedirect("RemovedProduct");
+            } catch (Exception x) {
+                resp.sendRedirect("ErrorPage");
+            }
+        }
+        else resp.sendRedirect("ErrorPage");
     }
 }
