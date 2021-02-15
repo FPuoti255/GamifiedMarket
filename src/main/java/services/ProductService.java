@@ -77,6 +77,7 @@ public class ProductService {
         Map<User, Integer> UserPoints = new HashMap<>();
         Product pdr = getProductOfTheDay();
         if(pdr!=null){
+            em.setProperty("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS);
             List<UserQuestionnairePoints> myData = em.createNamedQuery("UserQuestionnairePoints", UserQuestionnairePoints.class)
                     .setParameter(
                             1,

@@ -144,6 +144,7 @@ public class UserQuestionnaire implements Serializable {
 
     public boolean alreadyFulfilled(User currentUser) {
         UserQuestionnairePointsPK pk = new UserQuestionnairePointsPK(product.getIdProduct(), currentUser.getIdUser());
+        em.setProperty("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS);
         UserQuestionnairePoints uqp = em.find(UserQuestionnairePoints.class, pk);
         return uqp != null;
     }

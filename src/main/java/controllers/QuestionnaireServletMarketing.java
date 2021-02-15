@@ -88,8 +88,8 @@ public class QuestionnaireServletMarketing extends HttpServlet {
             return;
         }
 
-        ctx.setVariable("questions", userQuestionnaire.getCurrentSectionQuestions());
         ctx.setVariable("product", userQuestionnaire.getProduct());
+        ctx.setVariable("questions", userQuestionnaire.getCurrentSectionQuestions());
         templateEngine.process(path, ctx, response.getWriter());
     }
 
@@ -102,8 +102,8 @@ public class QuestionnaireServletMarketing extends HttpServlet {
             return;
         }
 
-        ctx.setVariable("answers", userQuestionnaire.getUserMarketingAnswers());
         userQuestionnaire.setCurrentUserSection(QuestionnaireSection.MARKETING);
+        ctx.setVariable("answers", userQuestionnaire.getUserMarketingAnswers());
         ctx.setVariable("product", userQuestionnaire.getProduct());
 
         templateEngine.process(path, ctx, response.getWriter());
@@ -112,6 +112,7 @@ public class QuestionnaireServletMarketing extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User currentUser = (User) request.getSession().getAttribute("user");
+
 
         if (userQuestionnaire.getProduct() == null) { //if the product is null, there's no product of the day
             response.sendRedirect("UserHomePage");
