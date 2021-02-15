@@ -182,6 +182,7 @@ public class UserQuestionnaire implements Serializable {
     }
 
     public Product getProduct() {
+        product = pdrService.getProductOfTheDay();
         return product;
     }
 

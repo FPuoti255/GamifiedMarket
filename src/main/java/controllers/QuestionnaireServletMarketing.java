@@ -34,8 +34,6 @@ public class QuestionnaireServletMarketing extends HttpServlet {
     @Inject
     UserQuestionnaire userQuestionnaire;
 
-    @EJB(beanName = "ProductService")
-    ProductService pdrService;
 
     @Override
     public void init() throws ServletException {
