@@ -35,13 +35,16 @@
         <div class="col-7 ml-5">
             <h2 class="text-success">All reviews</h2>
                 <h3>From other users</h3>
-                <ul class="mt-5" th:each="rev : ${reviews}">
+                <div th:if="${reviews != null}">
+                    <p>No user has reviewed the product yet.</p>
+                </div>
+                <ul class="my-5" th:each="rev : ${reviews}">
                     <li th:if = "${rev.getIdUser() != user.getIdUser()}" >
                         <p th:text="'IdUser ' + ${rev.getIdUser()} + ': ' + ${rev.getReviewText()}">IdUser: review text</p>
                     </li>
                 </ul>
-                <h3>Your reviews</h3>
-                <ul class="mt-5" th:each="rev : ${reviews}">
+                <h3>Your review</h3>
+                <ul class="my-5" th:each="rev : ${reviews}">
                     <li th:unless = "${rev.getIdUser() != user.getIdUser()}">
                         <p  th:text="${rev.getReviewText()}">IdUser: review text</p>
                     </li>

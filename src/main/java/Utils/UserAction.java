@@ -6,7 +6,8 @@ public enum UserAction {
     LOGIN (2, "login"),
     LOGOUT (3, "logout"),
     LEAVE_REVIEW (4, "leave_review"),
-    BANNED (5, "banned");
+    BANNED (5, "banned"),
+    PREVIOUS (6, "previous");
 
     private final int num;
     private final String name;
@@ -25,6 +26,8 @@ public enum UserAction {
     }
 
     public static UserAction parseName (String action) throws IllegalArgumentException {
+        if(action == null ) return null;
+
         switch (action.toLowerCase()){
             case "submitted" :
                 return SUBMITTED;
@@ -38,6 +41,8 @@ public enum UserAction {
                 return LEAVE_REVIEW;
             case "banned" :
                 return BANNED;
+            case "previous" :
+                return PREVIOUS;
             default:
                 throw new IllegalArgumentException();
         }
@@ -57,6 +62,8 @@ public enum UserAction {
                 return LEAVE_REVIEW;
             case 5 :
                 return BANNED;
+            case 6 :
+                return PREVIOUS;
             default:
                 throw new IllegalArgumentException();
         }

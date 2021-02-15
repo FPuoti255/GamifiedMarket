@@ -68,7 +68,14 @@ public class QuestionnaireServletStatistical extends HttpServlet {
         User user = (User) request.getSession().getAttribute("user");
         String msg = "";
 
-        if (request.getParameter("cancelled") != null) {
+        UserAction action = UserAction.parseName( request.getParameter("action") );
+
+        if(action == null){
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        if( action == UserAction.CANCELLED){
             userQuestionnaire.cancelQuestionnaire(user);
             renderEndQuestionnairePage(request, response, msg = "Your questionnaire has been successfully cancelled.");
             return;
@@ -112,9 +119,9 @@ public class QuestionnaireServletStatistical extends HttpServlet {
         }
 
 
-        if (request.getParameter("turnBack") != null) {
+        if (action == UserAction.PREVIOUS) {
             response.sendRedirect(request.getContextPath() + "/QuestionnaireServletMarketing");
-        } else {
+        } else if(action == UserAction.SUBMITTED) {
             try {
                 UserAction act = userQuestionnaire.validateUserQuestionnaire();
                 if (act == UserAction.BANNED) {
@@ -126,6 +133,8 @@ public class QuestionnaireServletStatistical extends HttpServlet {
             } catch (SystemException | NotSupportedException e2) {
                 e2.printStackTrace();
             }
+        }else{
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
 
     }

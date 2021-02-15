@@ -111,17 +111,11 @@
                     </div>
                 </li>
             </ul>
-            <div class="btn-group-vertical">
-                <span>
-                    <input id="check" class="form-check-input" type="checkbox" name="turnBack">
-                    <label for="check"> Do you want to review your marketing section answers? Check here </label><br>
-                </span>
-                <span>
-                    <input id="del" class="form-check-input" type="checkbox" name="cancelled">
-                    <label for="del">Check here to cancel your questionnaire</label><br>
-                </span>
-            </div><br>
-            <button type="submit" class="btn btn-primary my-5" value="Submit">Submit</button>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary mx-3" name="action" value="previous">Previous</button>
+                <button type="submit" class="btn btn-primary mx-3" name="action" value="cancelled">Cancel</button>
+                <button type="submit" class="btn btn-primary mx-3" name="action" value="submitted">Submit</button>
+            </div>
         </form>
     </div>
 </div>
