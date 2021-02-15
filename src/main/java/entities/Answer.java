@@ -1,9 +1,5 @@
 package entities;
 
-
-import org.eclipse.persistence.annotations.NamedStoredFunctionQuery;
-import org.eclipse.persistence.annotations.StoredProcedureParameter;
-
 import javax.persistence.*;
 
 @Entity
