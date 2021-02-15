@@ -150,6 +150,7 @@ public class UserQuestionnaire implements Serializable {
 
     public void reset(){
         currentUserSection = QuestionnaireSection.MARKETING;
+        product = pdrService.getProductOfTheDay();
         userMarketingAnswers.clear();
         userStatisticalAnswers.clear();
         cancelled = false;

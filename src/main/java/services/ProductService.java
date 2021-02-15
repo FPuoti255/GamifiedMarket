@@ -29,6 +29,7 @@ public class ProductService {
     public Product getProductOfTheDay() {
         Product productOfTheDay;
         try{
+            em.setProperty("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS);
             productOfTheDay = em.createNamedQuery("Product.getProductOfTheDay", Product.class).getSingleResult();
         }catch(NoResultException e){
             productOfTheDay = null;
