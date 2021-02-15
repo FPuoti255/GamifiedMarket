@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @WebServlet(name = "AddNewProduct", value = "/AddNewProduct")
@@ -113,43 +114,51 @@ public class AddNewProduct extends HttpServlet {
         assert(image != null);
         assert (productDate != null);
 
+        //Checking the inserted questions
+        String textArea = req.getParameter("questionText");
+        String[] insertedQuestions = null;
+        if( textArea!=null && !textArea.isEmpty()) insertedQuestions = textArea.split("\r\n");
 
-        /**
-         * marshal the parameters from the form and invoke the
-         * productService to add the product to the database
-         */
-        Product p = null;
+        //Checking the questions selected among those proposed
+        List<Question> selectedQst =
+                qstService.getAllQuestions().stream()
+                        .filter(x -> x.getPoints() == 1
+                                && req.getParameter(Integer.toString(x.getIdQuestion())) != null)
+                        .collect(Collectors.toList());
+
+        if(insertedQuestions == null && selectedQst.isEmpty()){
+            renderPage(req, resp, "You have to insert at least one marketing question.");
+            return;
+        }
+
+
+        Product p;
         try{
             p = products.addProduct(
                     productName,
                     image,
                     productDate);
+            if( p == null){
+                renderPage(req, resp, "Ops something went wrong!");
+                return;
+            }
         }catch (DateAlreadySelected ds) {
             renderPage(req, resp, "The selected date has been already chosen for another product!");
             return;
         }
 
-        if( p == null){
-            renderPage(req, resp, "Ops something went wrong!");
-            return;
+        //Linking the product to the questions selected among those proposed
+        for( Question qst : selectedQst){
+            questionnaireService.linkQuestionToProduct(
+                    qst.getIdQuestion(),
+                    p.getIdProduct()
+            );
         }
 
-        for(Question qst : qstService.getAllQuestions().stream().filter( x -> x.getPoints() == 1)
-                .collect(Collectors.toList())){
-            if(req.getParameter(Integer.toString(qst.getIdQuestion())) != null){
-                questionnaireService.linkQuestionToProduct(
-                        qst.getIdQuestion(),
-                        p.getIdProduct()
-                );
-            }
-        }
-
-        String textArea = req.getParameter("questionText");
-
-        if( textArea!=null && !textArea.isEmpty()){
-            String[] questions = textArea.split("\r\n");
+        //Inserting and linking to the product the new questions inserted by the admin
+        if(insertedQuestions != null){
             Question newQst;
-            for(String qst : questions){
+            for (String qst : insertedQuestions) {
                 newQst = qstService.addQuestion(qst, 1);
                 questionnaireService.linkQuestionToProduct(
                         newQst.getIdQuestion(),

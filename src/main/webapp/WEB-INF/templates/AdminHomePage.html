@@ -21,7 +21,7 @@
         Product of today:
         <p th:text="${product.getName()}"></p>
         <br />
-        <img class="img-thumbnail text-center" th:src="*{'data:image/png;base64,'+ product.imageString()}"
+        <img class="img-thumbnail" th:src="*{'data:image/png;base64,'+ product.imageString()}"
              alt="ProductImage" th:alt="'Image of: '+ ${product.getName()}">
     </div>
     <div th:if="${product == null}" class="mt-5 text-center">
@@ -29,7 +29,7 @@
     </div>
 
 
-    <div  class="mt-5 text-center">
+    <div  class="my-5 text-center">
         <a href="AddNewProduct"> Add a new product! </a>
     </div>
 

@@ -46,6 +46,7 @@ public class ProductService {
     }
 
     public List<Review> getReviews (int productId){
+        em.setProperty("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS);
         return (List<Review>) em.find(Product.class, productId).getReviewsByIdProduct();
     }
 

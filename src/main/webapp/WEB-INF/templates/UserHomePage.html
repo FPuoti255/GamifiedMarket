@@ -28,6 +28,7 @@
                 <form action="UserHomePage" method="post">
                     <textarea id="userRev" name="userRev" cols="50" required
                               placeholder="If you want to review this product, please,insert your comment here"></textarea>
+                    <br>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
@@ -35,7 +36,7 @@
         <div class="col-7 ml-5">
             <h2 class="text-success">All reviews</h2>
                 <h3>From other users</h3>
-                <div th:if="${reviews != null}">
+                <div th:if="${reviews == null || reviews.size()<=1}">
                     <p>No user has reviewed the product yet.</p>
                 </div>
                 <ul class="my-5" th:each="rev : ${reviews}">

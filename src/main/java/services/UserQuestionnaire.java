@@ -48,12 +48,12 @@ public class UserQuestionnaire implements Serializable {
     QuestionnaireSection currentUserSection;
 
     Product product;
-    List<Questionnaire> questions;
+    final List<Questionnaire> questions = new ArrayList<>();
 
     final List<Answer> userMarketingAnswers = new ArrayList<>();
     final List<Answer> userStatisticalAnswers = new ArrayList<>();
 
-    boolean invalidated;
+    boolean cancelled;
 
     @EJB(name = "ProductService")
     ProductService pdrService;
@@ -70,8 +70,8 @@ public class UserQuestionnaire implements Serializable {
     public void initialize() {
         currentUserSection = QuestionnaireSection.MARKETING;
         product = pdrService.getProductOfTheDay();
-        questions = (List<Questionnaire>) (product != null ? pdrService.getProductOfTheDay().getQuestionnairesByIdProduct() : null);
-        invalidated = false;
+        if(product != null) questions.addAll(pdrService.getProductOfTheDay().getQuestionnairesByIdProduct());
+        cancelled = false;
     }
 
     public void insertSingleAnswer(Answer asw) throws IllegalArgumentException {
@@ -126,7 +126,7 @@ public class UserQuestionnaire implements Serializable {
         }catch (RollbackException | HeuristicMixedException | HeuristicRollbackException | SystemException e2){
             e2.printStackTrace();
         }finally {
-            invalidateBean();
+            cancelled = true;
         }
 
         return act;
@@ -139,13 +139,7 @@ public class UserQuestionnaire implements Serializable {
                 UserAction.CANCELLED,
                 this.product.getIdProduct()
         );
-        invalidateBean();
-    }
-
-    private void invalidateBean() {
-        userMarketingAnswers.clear();
-        userStatisticalAnswers.clear();
-        invalidated = true;
+        cancelled = true;
     }
 
     public boolean alreadyFulfilled(User currentUser) {
@@ -153,6 +147,14 @@ public class UserQuestionnaire implements Serializable {
         UserQuestionnairePoints uqp = em.find(UserQuestionnairePoints.class, pk);
         return uqp != null;
     }
+
+    public void reset(){
+        currentUserSection = QuestionnaireSection.MARKETING;
+        userMarketingAnswers.clear();
+        userStatisticalAnswers.clear();
+        cancelled = false;
+    }
+
 
     @Remove
     public void remove() {
@@ -174,8 +176,8 @@ public class UserQuestionnaire implements Serializable {
         this.currentUserSection = currentUserSection;
     }
 
-    public boolean isInvalidated() {
-        return invalidated;
+    public boolean isCancelled() {
+        return cancelled;
     }
 
     public Product getProduct() {
@@ -191,7 +193,10 @@ public class UserQuestionnaire implements Serializable {
     }
 
     public void setQuestions(List<Questionnaire> questions) {
-        this.questions = questions;
+        this.questions.addAll(
+                questions.stream()
+                        .filter(x -> ! this.questions.contains(x)).collect(Collectors.toList())
+        );
     }
 
     public List<Answer> getUserMarketingAnswers() {
@@ -199,7 +204,10 @@ public class UserQuestionnaire implements Serializable {
     }
 
     public void setUserMarketingAnswers(List<Answer> userMarketingAnswers) {
-        this.userMarketingAnswers.addAll(userMarketingAnswers);
+        this.userMarketingAnswers.addAll(
+                userMarketingAnswers.stream()
+                        .filter(x -> ! this.userMarketingAnswers.contains(x)).collect(Collectors.toList())
+        );
     }
 
     public List<Answer> getUserStatisticalAnswers() {
@@ -207,7 +215,10 @@ public class UserQuestionnaire implements Serializable {
     }
 
     public void setUserStatisticalAnswers(List<Answer> userStatisticalAnswers) {
-        this.userStatisticalAnswers.addAll(userStatisticalAnswers);
+        this.userStatisticalAnswers.addAll(
+                userStatisticalAnswers.stream()
+                        .filter(x -> ! this.userStatisticalAnswers.contains(x)).collect(Collectors.toList())
+        );
     }
 
 }
