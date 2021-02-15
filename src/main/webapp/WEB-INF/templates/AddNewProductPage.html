@@ -15,7 +15,7 @@
 
 <nav th:replace="navbars/AdminNavBar :: navbar"></nav>
 
-<div class="mt-5 d-flex justify-content-center">
+<div class="mt-5 my-5 text-center">
     <h3>Insert a new product</h3>
     <form action="AddNewProduct" method="post" enctype="multipart/form-data">
         <div class="mb-10">
@@ -42,7 +42,7 @@
                     <input type="checkbox" th:id="${qst.getIdQuestion()}" th:name="${qst.getIdQuestion()}">
                     <label th:for="${qst.getIdQuestion()}" th:text="${qst.getQuestionText()}"></label>
                 </ul>
-                
+
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Add</button>

@@ -36,7 +36,7 @@
         <div class="col-7 ml-5">
             <h2 class="text-success">All reviews</h2>
                 <h3>From other users</h3>
-                <div th:if="${reviews == null || reviews.size()<=1}">
+                <div th:if="${reviews == null || reviews.size()==0 || (reviews.size() ==1 && reviews.get(0).getIdUser() == user.getIdUser())}">
                     <p>No user has reviewed the product yet.</p>
                 </div>
                 <ul class="my-5" th:each="rev : ${reviews}">

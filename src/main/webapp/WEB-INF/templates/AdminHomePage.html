@@ -21,7 +21,7 @@
         Product of today:
         <p th:text="${product.getName()}"></p>
         <br />
-        <img class="img-thumbnail" th:src="*{'data:image/png;base64,'+ product.imageString()}"
+        <img class="img-thumbnail" style="width: 450px ; height: 450px" th:src="*{'data:image/png;base64,'+ product.imageString()}"
              alt="ProductImage" th:alt="'Image of: '+ ${product.getName()}">
     </div>
     <div th:if="${product == null}" class="mt-5 text-center">
