@@ -29,14 +29,9 @@ import javax.transaction.RollbackException;
 @Stateful
 @TransactionManagement(TransactionManagementType.BEAN)
 public class UserQuestionnaire implements Serializable {
-    /*
-        Usually, an EntityManager lives and dies within a JTA transaction.
-        Once the transaction is finished, all persistent objects are detached from the EntityManager and are no longer managed.
-        Any local caching the EntityManager instance had done is lost.
-        Long-living EntityManagers, that live beyond the scope of a JTA transaction, are called an Extended Persistence Context.
-        When you specify that an injected EntityManager is an extended persistence context, all object instances remain managed.
-     */
-    @PersistenceContext(unitName = "gamified_market", type = PersistenceContextType.EXTENDED)
+
+
+    @PersistenceContext(unitName = "gamified_market")
     EntityManager em;
 
     @EJB(beanName = "Logger")
@@ -86,7 +81,6 @@ public class UserQuestionnaire implements Serializable {
     }
 
 
-
     public UserAction validateUserQuestionnaire() throws IllegalArgumentException, SystemException, NotSupportedException {
 
         utx.begin();
@@ -123,12 +117,11 @@ public class UserQuestionnaire implements Serializable {
                     act,
                     null
             );
-        }catch (RollbackException | HeuristicMixedException | HeuristicRollbackException | SystemException e2){
+        }catch (Exception e2){
             e2.printStackTrace();
         }finally {
-            cancelled = true;
+            this.reset();
         }
-
         return act;
     }
 
@@ -144,7 +137,6 @@ public class UserQuestionnaire implements Serializable {
 
     public boolean alreadyFulfilled(User currentUser) {
         UserQuestionnairePointsPK pk = new UserQuestionnairePointsPK(product.getIdProduct(), currentUser.getIdUser());
-        em.setProperty("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS);
         UserQuestionnairePoints uqp = em.find(UserQuestionnairePoints.class, pk);
         return uqp != null;
     }
