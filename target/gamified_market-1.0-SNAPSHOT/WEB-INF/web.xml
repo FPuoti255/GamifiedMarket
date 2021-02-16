@@ -24,6 +24,7 @@
         <url-pattern>/QuestionnaireServletMapping</url-pattern>
         <url-pattern>/QuestionnaireServletStatistical</url-pattern>
         <url-pattern>/QuestionnaireSummary</url-pattern>
+        <url-pattern>/LeaderBoard</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>

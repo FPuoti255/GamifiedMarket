@@ -31,7 +31,7 @@
     <div class="mx-5 my-5">
         <ul th:each="question : ${questions}">
             <li>
-                <label th:text="${question.getPoints() > 1 ? 'Mandatory' : 'Facultative'}"></label> <br />
+                <label th:text="${question.getPoints() > 1 ? 'Facultative' : 'Mandatory'}"></label> <br />
                 <label th:text="${question.getIdQuestion()}"></label>
                 <label th:text="${question.getQuestionText()}"></label>
 
